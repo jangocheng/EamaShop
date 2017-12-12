@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  eamashop.catelog.api:
+    image: eamashop.catelog.api
+    build:
+      context: ./EamaShop.Catelog.API
+      dockerfile: Dockerfile
+
+  eamashop.delievery.api:
+    image: eamashop.delievery.api
+    build:
+      context: ./EamaShop.Delievery.API
+      dockerfile: Dockerfile
+
+  eamashop.ordering.api:
+    image: eamashop.ordering.api
+    build:
+      context: ./EamaShop.Ordering.API
+      dockerfile: Dockerfile
+
+  eamashop.identity.api:
+    image: eamashop.identity.api
+    build:
+      context: ./EamaShop.Identity.API
+      dockerfile: Dockerfile
+
+  eamashop.webapp:
+    image: eamashop.webapp
+    build:
+      context: ./EamaShop.WebApp
+      dockerfile: Dockerfile
+
+  eamashop.basket.api:
+    image: eamashop.basket.api
+    build:
+      context: ./EamaShop.Basket.API
+      dockerfile: Dockerfile
