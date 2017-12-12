@@ -24,6 +24,7 @@ namespace EamaShop.Identity.API.Controllers
         {
             return Ok();
         }
+
         /// <summary>
         /// 获取详情信息
         /// </summary>

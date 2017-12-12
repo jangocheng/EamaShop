@@ -4,16 +4,17 @@ using System.Text;
 using System.Threading.Tasks;
 using EamaShop.Identity.DataModel;
 using Microsoft.EntityFrameworkCore;
+using EamaShop.Identity.Services.Respository;
 
 namespace EamaShop.Identity.Services
 {
     public class LoginService : ILoginService
     {
-        private readonly DbContext _context;
-        private readonly IPasswordFactory _passwordFactory;
-        public LoginService(DbContext context, IPasswordFactory passwordFactory)
+        private readonly IUserRespository _respostory;
+        private readonly IPasswordEncryptor _passwordFactory;
+        public LoginService(IUserRespository respostory, IPasswordEncryptor passwordFactory)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _respostory = respostory ?? throw new ArgumentNullException(nameof(respostory));
             _passwordFactory = passwordFactory ?? throw new ArgumentNullException(nameof(passwordFactory));
         }
         public async Task<ApplicationUser> LoginAsync(string name, string password)
@@ -28,19 +29,21 @@ namespace EamaShop.Identity.Services
                 throw new ArgumentNullException(nameof(password));
             }
 
-            var table = _context.Set<ApplicationUser>();
+            var user = await _respostory.FindByIdentifier(name);
 
-            var user = await table.FirstOrDefaultAsync(x => x.AccountName == name || x.Email == name || x.Phone == name);
             if (user == null)
             {
                 throw new DomainException("用户不存在");
             }
-            var result = _passwordFactory.FromSource(password, user.Salt);
+            var result = _passwordFactory.Encrypt(password, user.Salt);
 
             if (user.Password != result)
             {
                 throw new DomainException("密码错误");
             }
+            user.LastLoginTime = DateTime.Now;
+            _respostory.UpdateUser(user);
+            await _respostory.UnitOfWork.SaveEntitiesAsync();
 
             return user;
         }
