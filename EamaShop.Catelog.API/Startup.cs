@@ -9,36 +9,34 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication;
+using EamaShop.Catalog.API.Respository;
+using Microsoft.EntityFrameworkCore;
 
 namespace EamaShop.Catelog.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
-            Configuration = configuration;
+            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            Environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvcCore()
-                .AddApiExplorer()
-                .AddJsonFormatters()
-                .AddCors()
-                .AddFormatterMappings();
-            // auth by jwtbeaerer; challenge by jwtbearer; forbid by jwtbearer;
-            services.AddAuthentication().AddJwtBearer(opt =>
+            services.AddAll();
+            services.AddDbContext<ProductContext>(opt =>
             {
-                opt.Audience = "catalog";
+                opt.UseMySql(Configuration.GetConnectionString("Master"));
             });
-            //services.AddAuthentication()
-            //    .AddOAuth("", opt =>
-            //    {
-            //        opt.AuthorizationEndpoint = "http://www.eamashop.com/gateway.do?method=identity.authorize.connect.oauth.code";
-            //    });
+            if (Environment.IsDevelopment())
+            {
+                services.AddDefaultSwagger("Catalog Service", "", "catalog");
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,10 +44,23 @@ namespace EamaShop.Catelog.API
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDefaultSwaggerAndDev("Catalog Service");
             }
-            app.UseAuthentication();
-            app.UseMvc();
+            app.UseAll();
+
+            // hosting create container.
+            // and copy a container.
+            // initialize startup by using initialized container.
+            // initialize copy container by using startup's ConfigureServices method.
+            // build copy container
+            // initialize app by using built copy container.
+            using (var scop = app.ApplicationServices.CreateScope())
+            {
+                scop.ServiceProvider
+                    .GetRequiredService<ProductContext>()
+                    .Database
+                    .EnsureCreated();
+            }
         }
     }
 }

@@ -8,22 +8,34 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
+using EamaShop.Ordering.Respository;
 
 namespace EamaShop.Ordering.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration,IHostingEnvironment environment)
         {
-            Configuration = configuration;
+            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            Environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddAll();
+            services.AddDbContext<OrderContext>(opt =>
+            {
+                opt.UseSqlServer(Configuration.GetConnectionString("Master"));
+            });
+            if (Environment.IsDevelopment())
+            {
+                services.AddDefaultSwagger("Ordering Service", "", "catalog");
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -31,10 +43,23 @@ namespace EamaShop.Ordering.API
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseDefaultSwaggerAndDev("Ordering Service");
             }
+            app.UseAll();
 
-            app.UseMvc();
+            // hosting create container.
+            // and copy a container.
+            // initialize startup by using initialized container.
+            // initialize copy container by using startup's ConfigureServices method.
+            // build copy container
+            // initialize app by using built copy container.
+            using (var scop = app.ApplicationServices.CreateScope())
+            {
+                scop.ServiceProvider
+                    .GetRequiredService<OrderContext>()
+                    .Database
+                    .EnsureCreated();
+            }
         }
     }
 }

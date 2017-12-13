@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using EamaShop.Identity.API.Parameters;
 using Microsoft.AspNetCore.Authorization;
 
 namespace EamaShop.Identity.API.Controllers
@@ -20,7 +19,7 @@ namespace EamaShop.Identity.API.Controllers
         /// <param name="parameters"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Register(UserRegisterParameters parameters)
+        public async Task<IActionResult> Register()
         {
             return Ok();
         }
