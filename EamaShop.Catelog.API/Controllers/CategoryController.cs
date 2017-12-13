@@ -9,6 +9,8 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using EamaShop.Catalog.API.DTO;
+using Microsoft.AspNetCore.Authorization;
+using EamaShop.Infrastructures;
 
 namespace EamaShop.Catalog.API.Controllers
 {
@@ -31,8 +33,37 @@ namespace EamaShop.Catalog.API.Controllers
 
             return Ok(categories);
         }
+        [Authorize(Roles = nameof(UserRole.UserAndMerchant))]
+        public async Task<IActionResult> Create(CategoryCreateDto parameters)
+        {
 
+            var parentId = 0L;
+            var level = 0;
+            if (parameters.ParentId != null)
+            {
+                var parentCategory = await _context.Category.FirstOrDefaultAsync(x => x.Id == parameters.ParentId);
+                if (parentCategory == null)
+                {
+                    ModelState.AddModelError("ParentId", "no parent category was found");
+                    return BadRequest(ModelState);
+                }
+                parentId = parentCategory.Id;
+                level = parentCategory.Level + 1;
+            }
 
+            var category = new Category()
+            {
+                Name = parameters.Name,
+                ParentId = parentId,
+                StoreId = parameters.StoreId,
+                Level = level
+            };
+
+            await _context.AddAsync(category, HttpContext.RequestAborted);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
 
     }
 }

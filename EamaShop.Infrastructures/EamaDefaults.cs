@@ -14,9 +14,5 @@ namespace System
         /// 授权的对象，授权的是所有的 Api
         /// </summary>
         public const string Audience = "Api";
-        /// <summary>
-        /// 发布 token 的人 默认是认证服务器发布
-        /// </summary>
-        public const string Issuer = "Identity Server";
     }
 }

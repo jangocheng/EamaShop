@@ -23,5 +23,9 @@ namespace EamaShop.Catalog.API.Respository
 
         public long CategoryId { get; set; }
         public Category Category { get; set; }
+
+        public DateTime CreateTime { get; set; }
+
+        public DateTime ModifiedTime { get; set; }
     }
 }

@@ -25,7 +25,8 @@ namespace EamaShop.Catalog.API.Respository.EntityConfigs
                 .Metadata.BeforeSaveBehavior = PropertySaveBehavior.Save;
 
             var create = builder.Property(x => x.CreateTime)
-                 .HasDefaultValueSql("now()")
+                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                 .HasColumnType("TIMESTAMP")
                  .ValueGeneratedOnAdd();
             create.Metadata
             .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
@@ -33,7 +34,8 @@ namespace EamaShop.Catalog.API.Respository.EntityConfigs
                 .AfterSaveBehavior = PropertySaveBehavior.Throw;
 
             var modified = builder.Property(x => x.ModifiedTime)
-                .HasDefaultValueSql("now()")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("TIMESTAMP")
                 .ValueGeneratedOnAddOrUpdate();
             modified.Metadata
                 .AfterSaveBehavior = PropertySaveBehavior.Ignore;

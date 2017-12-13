@@ -52,5 +52,7 @@ namespace EamaShop.Identity.API.Controllers
 
             return Ok(token);
         }
+
+        
     }
 }

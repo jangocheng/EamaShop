@@ -7,15 +7,12 @@ using System.Threading.Tasks;
 
 namespace EamaShop.Catalog.API.DTO
 {
-    public class CategoryDto
+    public class CategoryDto : CategoryCreateDto
     {
         public long Id { get; set; }
 
-        public string Name { get; set; }
-
-        public long ParentId { get; set; }
-
         public int Level { get; set; }
+
         public CategoryDto()
         {
 
@@ -32,6 +29,7 @@ namespace EamaShop.Catalog.API.DTO
             Name = category.Name;
             ParentId = category.ParentId;
             Level = category.Level;
+            StoreId = category.StoreId;
         }
     }
 }

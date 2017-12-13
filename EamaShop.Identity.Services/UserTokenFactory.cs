@@ -64,7 +64,7 @@ namespace EamaShop.Identity.Services
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = cre,
                 Audience = EamaDefaults.Audience,
-                Issuer = EamaDefaults.Issuer
+                Issuer = ClaimsIdentity.DefaultIssuer
             };
         }
     }

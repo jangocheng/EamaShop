@@ -4,6 +4,7 @@ using System.Text;
 
 namespace EamaShop.Infrastructures
 {
+    [Flags]
     public enum UserRole
     {
         User,

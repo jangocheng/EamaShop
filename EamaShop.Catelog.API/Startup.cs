@@ -31,6 +31,8 @@ namespace EamaShop.Catelog.API
             services.AddAll();
             services.AddDbContext<ProductContext>(opt =>
             {
+                // 不要改数据源。
+                // 因为我也要让你们感受到被MySQL的那些坑支配的恐惧
                 opt.UseMySql(Configuration.GetConnectionString("Master"));
             });
             if (Environment.IsDevelopment())

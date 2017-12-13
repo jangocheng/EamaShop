@@ -20,9 +20,9 @@ namespace EamaShop.Catalog.API.Respository.EntityConfigs
             builder.Property(x => x.Name).IsRequired();
             builder.Property(x => x.PictureUris).IsRequired();
             builder.Property(x => x.Properties).IsRequired();
-            builder.Property(x => x.Specifications).IsRequired();
 
             builder.Property(x => x.Description)
+                .HasMaxLength(1600)
                 .HasDefaultValue(string.Empty)
                 .ValueGeneratedOnAddOrUpdate()
                 .Metadata
@@ -31,6 +31,25 @@ namespace EamaShop.Catalog.API.Respository.EntityConfigs
             builder.Property(x => x.Description)
                 .Metadata
                 .AfterSaveBehavior = PropertySaveBehavior.Save;
+
+            var create = builder.Property(x => x.CreateTime)
+                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                 .ValueGeneratedOnAdd()
+                 .HasColumnType("TIMESTAMP");
+            create.Metadata
+                 .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
+            create.Metadata
+                .AfterSaveBehavior = PropertySaveBehavior.Ignore;
+
+            var modified = builder.Property(x => x.ModifiedTime)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .ValueGeneratedOnAddOrUpdate()
+                .HasColumnType("TIMESTAMP");
+            modified.Metadata
+                .BeforeSaveBehavior = PropertySaveBehavior.Ignore;
+            modified.Metadata
+                .AfterSaveBehavior = PropertySaveBehavior.Ignore;
+
 
         }
     }

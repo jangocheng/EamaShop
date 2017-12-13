@@ -1,6 +1,7 @@
 ﻿using EamaShop.Infrastructures;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ using System.Text;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Common extensions for <see cref=""/>
+    /// Common extensions for <see cref="IServiceCollection"/>
     /// </summary>
     public static class ServiceCollectionExtensions
     {
@@ -64,6 +65,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
+        #region Mvc
         private static void Configure(MvcOptions options)
         {
             var cacheProfile = new CacheProfile()
@@ -82,8 +84,10 @@ namespace Microsoft.Extensions.DependencyInjection
         private static void Configure(JsonSerializerSettings settings)
         {
             settings.ContractResolver = null;
-        }
+        } 
+        #endregion
 
+        #region Cors
         private static void Configure(CorsOptions options)
         {
             options.AddPolicy("CorsPolicy",
@@ -91,8 +95,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AllowAnyMethod()
                 .AllowCredentials()
                 .AllowAnyHeader());
-        }
+        } 
+        #endregion
 
+        #region Swagger
         private static void Configure(SwaggerGenOptions options, string serviceName, string identityUrl, string scope)
         {
             var apiInfo = new Info()
@@ -105,6 +111,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             options.SwaggerDoc("v1", apiInfo);
 
+            // OAuth 还没实现呢，先讲究用JwtBearer手动认证吧~~~
             //options.AddSecurityDefinition("oauth2", new OAuth2Scheme
             //{
             //    Type = "oauth2",
@@ -126,25 +133,31 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             options.OperationFilter<AuthorizeCheckOperationFilter>();
         }
+        #endregion
 
+        #region JwtBearer
         private static void Configure(JwtBearerOptions options)
         {
             var parameters = new TokenValidationParameters()
             {
                 NameClaimType = ClaimTypes.Name,
                 RoleClaimType = ClaimTypes.Role,
-                ValidIssuer = "identity",
-                ValidAudience = "api",
+                ValidIssuer = ClaimsIdentity.DefaultIssuer,
+                ValidAudience = EamaDefaults.Audience,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(EamaDefaults.JwtBearerSignKey)),
             };
             options.TokenValidationParameters = parameters;
         }
+        #endregion
 
+        #region Authentication
         private static void Configure(AuthenticationOptions options)
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
         }
+        #endregion
+
     }
 }
