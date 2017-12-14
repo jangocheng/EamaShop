@@ -11,7 +11,9 @@ namespace EamaShop.Identity.Services
             Token = token ?? throw new ArgumentNullException(nameof(token));
             ExpiredIn = expiredIn;
         }
-
+        /// <summary>
+        /// 用户访问的授权token
+        /// </summary>
         public string Token { get; }
 
         public DateTime ExpiredIn { get; }

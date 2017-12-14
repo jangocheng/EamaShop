@@ -22,7 +22,6 @@ namespace EamaShop.Identity.API.Controllers
     /// </summary>
     [Produces("application/json")]
     [Route("api/authorize")]
-    [Authorize]
     public class AuthorizeController : Controller
     {
         private readonly ILoginService _loginService;
@@ -38,9 +37,9 @@ namespace EamaShop.Identity.API.Controllers
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        [AllowAnonymous]
         [HttpPost("jwtbearer")]
-        public async Task<IActionResult> JwtBearer(JwtBearerAuthDto parameters)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserToken))]
+        public async Task<IActionResult> JwtBearer([FromBody]JwtBearerAuthDto parameters)
         {
             if (!ModelState.IsValid)
             {
@@ -52,7 +51,5 @@ namespace EamaShop.Identity.API.Controllers
 
             return Ok(token);
         }
-
-        
     }
 }

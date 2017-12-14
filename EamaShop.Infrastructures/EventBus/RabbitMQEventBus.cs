@@ -24,20 +24,24 @@ namespace EamaShop.Infrastructures
         private readonly int _retryCount;
         private readonly IServiceProvider _container;
         private readonly string _queueName = AppDomain.CurrentDomain.FriendlyName;
-        private readonly IList<IEventBusEventHandler> _handlers;
+        private readonly IModel _channel;
+        private readonly IEventHandlerManager _manager;
         public RabbitMQEventBus(
             IRabbitMQPersistentConnection persistentConnection,
             ILogger<RabbitMQEventBus> logger,
             IServiceProvider serviceProvider,
+            IEventHandlerManager manager,
             int retryCount = 5)
         {
             _persistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _retryCount = retryCount;
             _container = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-            _handlers = new List<IEventBusEventHandler>();
+            _manager = manager ?? throw new ArgumentNullException(nameof(manager));
+            _channel = CreateConsumer();
         }
         public void Publish<TEvent>(TEvent eventMessage)
+            where TEvent : IEventMetadata
         {
             if (!_persistentConnection.IsConnected)
             {
@@ -86,6 +90,7 @@ namespace EamaShop.Infrastructures
         }
 
         public async Task PublishAsync<TEvent>(TEvent eventMessage)
+            where TEvent : IEventMetadata
         {
             await Task.Run(() => Publish(eventMessage));
         }
@@ -93,7 +98,9 @@ namespace EamaShop.Infrastructures
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _persistentConnection.Dispose();
+            _channel.Dispose();
+            _manager.Dispose();
         }
         /// <summary>
         /// Create a default consumer that don't accept any event message.
@@ -143,27 +150,40 @@ namespace EamaShop.Infrastructures
         // get event handler that consume the event
         private async Task ProcessEventAsync(string eventName, string jsonMessage)
         {
+            var handlers = _manager.GetHandlers(eventName);
 
+            foreach (var h in handlers)
+            {
+                var methodInfo = h.GetType()
+                    .GetMethod(nameof(IEventBusEventHandler.HandleAsync));
+
+                var type = methodInfo.GetGenericArguments()[0];
+                var @event = JsonConvert.DeserializeObject(jsonMessage, type, _setting);
+
+                var task = (Task)methodInfo.Invoke(h, new[] { @event });
+
+                await task;
+            }
         }
 
-        public void Unsubscribe<TEvent, TEventHandler>() where TEventHandler : IEventBusEventHandler
+        public void Unsubscribe<TEvent, TEventHandler>()
+            where TEvent : IEventMetadata
+            where TEventHandler : IEventBusEventHandler
         {
-            throw new NotImplementedException();
+            _manager.RemoveHandler<TEvent, TEventHandler>();
         }
 
         public void Subscribe<TEvent, TEventHandler>()
+            where TEvent : IEventMetadata
             where TEventHandler : IEventBusEventHandler
         {
-            if (_handlers.OfType<TEventHandler>().Any())
-            {
-                throw new ArgumentException(
-                    $"Handler Type {typeof(TEventHandler).Name} already registered", nameof(TEventHandler));
-            }
+            _manager.AddHandler<TEvent, TEventHandler>();
+
             if (!_persistentConnection.IsConnected)
             {
                 _persistentConnection.TryConnect();
             }
-
+            // 在指定的连接上开启通道并将当前的队列绑定到指定的路由上
             using (var channel = _persistentConnection.CreateModel())
             {
                 channel.QueueBind(queue: _queueName,

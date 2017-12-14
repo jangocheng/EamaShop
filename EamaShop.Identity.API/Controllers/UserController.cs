@@ -22,7 +22,8 @@ namespace EamaShop.Identity.API.Controllers
         /// <param name="parameters"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Register(UserRegisterDto parameters)
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody]UserRegisterDto parameters)
         {
             if (!ModelState.IsValid)
             {
@@ -42,10 +43,8 @@ namespace EamaShop.Identity.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> Details()
         {
-
             return Ok();
         }
     }

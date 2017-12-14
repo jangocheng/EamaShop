@@ -10,6 +10,9 @@ namespace EamaShop.Infrastructures
     /// </summary>
     public interface IRabbitMQPersistentConnection: IDisposable
     {
+        /// <summary>
+        /// Gets a value represent is current connection has connected and open.
+        /// </summary>
         bool IsConnected { get; }
 
         bool TryConnect();

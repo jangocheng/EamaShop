@@ -21,7 +21,7 @@ namespace EamaShop.Identity.Services
             var identity = TransformAsClaimIdentity(user);
 
             var securityTokenDescriptor = CreateDescriptor(user, identity);
-
+            
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var stoken = tokenHandler.CreateJwtSecurityToken(securityTokenDescriptor);

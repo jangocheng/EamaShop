@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -56,12 +57,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddDataAnnotations()
                 .AddJsonFormatters(Configure)
                 .AddFormatterMappings()
-                .AddCors(Configure);
+                .AddCors(Configure)
+                .AddAuthorization();
 
             // for authentication 
             services.AddAuthentication(Configure)
                 .AddJwtBearer(Configure);
-
+            
             return services;
         }
 
@@ -111,7 +113,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             options.SwaggerDoc("v1", apiInfo);
 
-            // OAuth 还没实现呢，先讲究用JwtBearer手动认证吧~~~
+            // OAuth 还没实现呢，先将就用JwtBearer手动认证吧~~~
             //options.AddSecurityDefinition("oauth2", new OAuth2Scheme
             //{
             //    Type = "oauth2",
