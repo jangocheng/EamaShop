@@ -6,26 +6,26 @@ using System.Threading.Tasks;
 namespace EamaShop.Infrastructures
 {
     /// <summary>
-    /// 事件总线
+    /// Represent a event bus.
     /// </summary>
     /// <typeparam name="TEvent"></typeparam>
     public interface IEventBus
     {
         /// <summary>
-        /// 异步的方式，发布事件到事件总线
+        /// Asynchronously publish a event to this event bus.
         /// </summary>
         /// <typeparam name="TEvent"></typeparam>
         /// <param name="eventMessage"></param>
         /// <returns></returns>
         Task PublishAsync<TEvent>(TEvent eventMessage) where TEvent : IEventMetadata;
         /// <summary>
-        /// 同步的方式，发布事件到事件总线
+        /// Synchronously publish a event to this event bus. 
         /// </summary>
         /// <typeparam name="TEvent"></typeparam>
         /// <param name="eventMessage"></param>
         void Publish<TEvent>(TEvent eventMessage) where TEvent : IEventMetadata;
         /// <summary>
-        /// 取消订阅指定事件
+        /// Remove <typeparamref name="TEventHandler"/>.If no handler exists,no thing todo.
         /// </summary>
         /// <typeparam name="TEvent"></typeparam>
         /// <typeparam name="TEventHandler"></typeparam>

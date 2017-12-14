@@ -8,8 +8,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using RabbitMQ.Client;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
@@ -63,7 +66,43 @@ namespace Microsoft.Extensions.DependencyInjection
             // for authentication 
             services.AddAuthentication(Configure)
                 .AddJwtBearer(Configure);
-            
+
+            // for event bus
+            services.TryAddSingleton<IEventBus>(sp =>
+            {
+                var connection = sp.GetRequiredService<IRabbitMQPersistentConnection>();
+                var logger = sp.GetRequiredService<ILogger<RabbitMQEventBus>>();
+                var manager = sp.GetRequiredService<IEventHandlerManager>();
+                var config = sp.GetRequiredService<IConfiguration>();
+
+                var retryCount = 5;
+                if (!string.IsNullOrEmpty(config["EventBusPublishRetryCount"]))
+                {
+                    retryCount = int.Parse(config["EventBusPublishRetryCount"]);
+                }
+
+                return new RabbitMQEventBus(connection, logger, manager, sp, retryCount);
+            });
+            services.TryAddSingleton<IRabbitMQPersistentConnection>(sp =>
+            {
+                var logger = sp.GetRequiredService<ILogger<RabbitMQPersistentConnection>>();
+                var config = sp.GetRequiredService<IConfiguration>();
+
+                var host = config["RabbitMQHost"];
+                var connectionFactory = new ConnectionFactory()
+                {
+                    HostName = host ?? "localhost"
+                };
+
+                var retryCount = 5;
+                if (!string.IsNullOrEmpty(config["RabbitMQConnectionRetry"]))
+                {
+                    retryCount = int.Parse(config["RabbitMQConnectionRetry"]);
+                }
+                return new RabbitMQPersistentConnection(connectionFactory, logger, retryCount);
+            });
+            services.AddSingleton<IEventHandlerManager, EventBusHandlerManager>();
+
             return services;
         }
 

@@ -1,6 +1,7 @@
 ﻿using EamaShop.Infrastructures;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace EamaShop.Identity.DataModel
 {
@@ -14,6 +15,7 @@ namespace EamaShop.Identity.DataModel
         [StringLength(20, MinimumLength = 8)]
         public string AccountName { get; set; }
         [Required]
+        [ClaimIgnoreField]
         public string Password { get; set; }
         [Phone]
         public string Phone { get; set; }

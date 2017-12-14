@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -22,22 +23,23 @@ namespace EamaShop.Infrastructures
         private readonly IRabbitMQPersistentConnection _persistentConnection;
         private readonly ILogger<RabbitMQEventBus> _logger;
         private readonly int _retryCount;
-        private readonly IServiceProvider _container;
         private readonly string _queueName = AppDomain.CurrentDomain.FriendlyName;
-        private readonly IModel _channel;
+        private IModel _channel;
         private readonly IEventHandlerManager _manager;
+        private readonly IServiceProvider service;
+
         public RabbitMQEventBus(
             IRabbitMQPersistentConnection persistentConnection,
             ILogger<RabbitMQEventBus> logger,
-            IServiceProvider serviceProvider,
             IEventHandlerManager manager,
+            IServiceProvider service,
             int retryCount = 5)
         {
             _persistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _retryCount = retryCount;
-            _container = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _manager = manager ?? throw new ArgumentNullException(nameof(manager));
+            this.service = service ?? throw new ArgumentNullException(nameof(service));
             _channel = CreateConsumer();
         }
         public void Publish<TEvent>(TEvent eventMessage)
@@ -136,7 +138,8 @@ namespace EamaShop.Infrastructures
 
         private void Channel_CallbackException(object sender, CallbackExceptionEventArgs e)
         {
-
+            _channel.Dispose();
+            _channel = CreateConsumer();
         }
 
         private async void Consumer_Received(object sender, BasicDeliverEventArgs e)
@@ -150,19 +153,23 @@ namespace EamaShop.Infrastructures
         // get event handler that consume the event
         private async Task ProcessEventAsync(string eventName, string jsonMessage)
         {
-            var handlers = _manager.GetHandlers(eventName);
-
-            foreach (var h in handlers)
+            var handlerTypes = _manager.GetHandlers(eventName);
+            using (var scope = service.CreateScope())
             {
-                var methodInfo = h.GetType()
-                    .GetMethod(nameof(IEventBusEventHandler.HandleAsync));
+                foreach (var t in handlerTypes)
+                {
+                    var instance = ActivatorUtilities.GetServiceOrCreateInstance(scope.ServiceProvider, t);
 
-                var type = methodInfo.GetGenericArguments()[0];
-                var @event = JsonConvert.DeserializeObject(jsonMessage, type, _setting);
+                    var methodInfo = typeof(IEventBusEventHandler)
+                        .GetMethod(nameof(IEventBusEventHandler.HandleAsync));
 
-                var task = (Task)methodInfo.Invoke(h, new[] { @event });
+                    var type = methodInfo.GetGenericArguments()[0];
+                    var @event = JsonConvert.DeserializeObject(jsonMessage, type, _setting);
 
-                await task;
+                    var task = (Task)methodInfo.Invoke(instance, new[] { @event });
+
+                    await task;
+                }
             }
         }
 

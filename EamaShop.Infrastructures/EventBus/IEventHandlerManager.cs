@@ -14,6 +14,6 @@ namespace EamaShop.Infrastructures
             where THandler : IEventBusEventHandler
             where TEvent : IEventMetadata;
 
-        IEnumerable<IEventBusEventHandler> GetHandlers(string eventName);
+        IEnumerable<Type> GetHandlers(string eventName);
     }
 }

@@ -43,9 +43,11 @@ namespace EamaShop.Identity.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Details()
+        public IActionResult Details()
         {
-            return Ok();
+            return Ok(User.Claims.ToDictionary(x => x.Type, x => x.Value));
         }
+
+        
     }
 }

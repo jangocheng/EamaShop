@@ -6,6 +6,9 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
+using System.Linq;
+using Newtonsoft.Json;
 
 namespace EamaShop.Identity.Services
 {
@@ -21,7 +24,7 @@ namespace EamaShop.Identity.Services
             var identity = TransformAsClaimIdentity(user);
 
             var securityTokenDescriptor = CreateDescriptor(user, identity);
-            
+
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var stoken = tokenHandler.CreateJwtSecurityToken(securityTokenDescriptor);
@@ -33,19 +36,46 @@ namespace EamaShop.Identity.Services
 
         protected virtual ClaimsIdentity TransformAsClaimIdentity(ApplicationUser user)
         {
-            var claims = new Claim[]
-           {
-                new Claim(ClaimTypes.Name,user.AccountName),
-                new Claim(ClaimTypes.MobilePhone,user.Phone),
-                new Claim(ClaimTypes.PrimarySid,user.Id.ToString()),
-                new Claim(ClaimTypes.Sid,user.Id.ToString()),
-                new Claim(ClaimTypes.Email,user.Email),
-                new Claim(ClaimTypes.Uri,user.HeadImageUri),
-                new Claim(ClaimTypes.GivenName,user.NickName),
-                new Claim(ClaimTypes.Role,user.Role.ToString())
-           };
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            var properties = user.GetType()
+                .GetTypeInfo()
+                .GetRuntimeProperties()
+                .Where(x => x.GetCustomAttribute<ClaimIgnoreFieldAttribute>() == null)
+                .ToArray();
+
+            var claims = new List<Claim>();
+
+            foreach (var p in properties)
+            {
+                var value = p.GetValue(user);
+                if (value == null) continue;
+                if (value.GetType().IsPrimitive ||
+                    value is string ||
+                    value is DateTime ||
+                    value is DateTimeOffset ||
+                    value is Guid)
+                {
+                    claims.Add(Create(p.Name, value.ToString(), p.PropertyType.Name));
+                }
+                else
+                {
+                    value = JsonConvert.SerializeObject(value);
+                    claims.Add(Create(p.Name, value.ToString(), p.PropertyType.Name));
+                }
+            }
+            claims.Add(Create(ClaimTypes.Name, user.AccountName, ClaimValueTypes.String));
+            claims.Add(Create(ClaimTypes.Role, user.Role.ToString(), ClaimValueTypes.String));
 
             return new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
+        }
+
+        private Claim Create(string type, string value, string dataType)
+        {
+            return new Claim(type, value, dataType, ClaimsIdentity.DefaultIssuer);
         }
 
         private SecurityTokenDescriptor CreateDescriptor(ApplicationUser user, ClaimsIdentity identity)
@@ -56,8 +86,8 @@ namespace EamaShop.Identity.Services
 
             var tokenKeyBytes = Encoding.ASCII.GetBytes(EamaDefaults.JwtBearerTokenKey);
             var tokenKey = new SymmetricSecurityKey(tokenKeyBytes);
-            var tokenCre = new EncryptingCredentials(tokenKey, 
-                SecurityAlgorithms.Aes128KW, 
+            var tokenCre = new EncryptingCredentials(tokenKey,
+                SecurityAlgorithms.Aes128KW,
                 SecurityAlgorithms.Aes128CbcHmacSha256);
 
             return new SecurityTokenDescriptor()

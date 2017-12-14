@@ -7,7 +7,8 @@ namespace EamaShop.Infrastructures
     [Flags]
     public enum UserRole
     {
-        User,
-        UserAndMerchant
+        User = 1,
+        Merchant = 4,
+        Admin = 6
     }
 }

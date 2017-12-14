@@ -33,10 +33,14 @@ namespace EamaShop.Catalog.API.Controllers
 
             return Ok(categories);
         }
-        [Authorize(Roles = nameof(UserRole.UserAndMerchant))]
-        public async Task<IActionResult> Create(CategoryCreateDto parameters)
+        [HttpPost]
+        [Authorize(Roles = nameof(UserRole.Merchant))]
+        public async Task<IActionResult> Create([FromBody]CategoryCreateDto parameters)
         {
-
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var parentId = 0L;
             var level = 0;
             if (parameters.ParentId != null)

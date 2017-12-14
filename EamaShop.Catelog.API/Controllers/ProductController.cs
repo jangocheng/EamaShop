@@ -32,7 +32,7 @@ namespace EamaShop.Catalog.API.Controllers
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ProductDto))]
-        [Authorize(Roles = nameof(UserRole.UserAndMerchant))]
+        [Authorize(Roles = nameof(UserRole.Merchant))]
         [Authorize]
         public async Task<IActionResult> Create(ProductCreateDto parameters)
         {

@@ -7,6 +7,7 @@ namespace EamaShop.Infrastructures
 {
     public interface IEventBusEventHandler
     {
+        void SetServiceContainer(IServiceProvider serviceProvider);
         Task HandleAsync<TEvent>(TEvent @event);
     }
 }
