@@ -84,7 +84,7 @@ namespace Microsoft.Extensions.DependencyInjection
         private static void Configure(JsonSerializerSettings settings)
         {
             settings.ContractResolver = null;
-        } 
+        }
         #endregion
 
         #region Cors
@@ -95,7 +95,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AllowAnyMethod()
                 .AllowCredentials()
                 .AllowAnyHeader());
-        } 
+        }
         #endregion
 
         #region Swagger
@@ -145,7 +145,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 ValidIssuer = ClaimsIdentity.DefaultIssuer,
                 ValidAudience = EamaDefaults.Audience,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(EamaDefaults.JwtBearerSignKey)),
+                TokenDecryptionKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(EamaDefaults.JwtBearerTokenKey))
             };
+
             options.TokenValidationParameters = parameters;
         }
         #endregion

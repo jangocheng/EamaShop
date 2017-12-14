@@ -19,9 +19,8 @@ namespace EamaShop.Identity.Services
             }
 
             var identity = TransformAsClaimIdentity(user);
+
             var securityTokenDescriptor = CreateDescriptor(user, identity);
-            securityTokenDescriptor.Expires = securityTokenDescriptor.Expires
-                ?? DateTime.Now.AddDays(7);
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -49,13 +48,17 @@ namespace EamaShop.Identity.Services
             return new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
         }
 
-        protected virtual SecurityTokenDescriptor CreateDescriptor(ApplicationUser user, ClaimsIdentity identity)
+        private SecurityTokenDescriptor CreateDescriptor(ApplicationUser user, ClaimsIdentity identity)
         {
             var signKeyBytes = Encoding.ASCII.GetBytes(EamaDefaults.JwtBearerSignKey);
-
             var sskey = new SymmetricSecurityKey(signKeyBytes);
-
             var cre = new SigningCredentials(sskey, SecurityAlgorithms.HmacSha256Signature);
+
+            var tokenKeyBytes = Encoding.ASCII.GetBytes(EamaDefaults.JwtBearerTokenKey);
+            var tokenKey = new SymmetricSecurityKey(tokenKeyBytes);
+            var tokenCre = new EncryptingCredentials(tokenKey, 
+                SecurityAlgorithms.Aes128KW, 
+                SecurityAlgorithms.Aes128CbcHmacSha256);
 
             return new SecurityTokenDescriptor()
             {
@@ -64,8 +67,11 @@ namespace EamaShop.Identity.Services
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = cre,
                 Audience = EamaDefaults.Audience,
-                Issuer = ClaimsIdentity.DefaultIssuer
+                Issuer = ClaimsIdentity.DefaultIssuer,
+                EncryptingCredentials = tokenCre
             };
         }
+
+
     }
 }

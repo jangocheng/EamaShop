@@ -13,7 +13,6 @@ namespace EamaShop.Identity.DataModel
         [Required]
         [StringLength(20, MinimumLength = 8)]
         public string AccountName { get; set; }
-        [StringLength(18, MinimumLength = 6)]
         [Required]
         public string Password { get; set; }
         [Phone]

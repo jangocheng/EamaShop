@@ -10,7 +10,7 @@ namespace EamaShop.Identity.API.Dto
     /// <summary>
     /// The view model or dto model for <see cref="UserController.Details"/>
     /// </summary>
-    public class UserDetailsDto
+    public class UserDto
     {
         [Required]
         [StringLength(20, MinimumLength = 8)]

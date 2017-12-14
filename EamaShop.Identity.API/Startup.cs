@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 
 namespace EamaShop.Identity.API
 {
@@ -29,6 +30,7 @@ namespace EamaShop.Identity.API
             {
                 services.AddDefaultSwagger("Identity Service", "http://localhost:59322", "auth_base");
             }
+            services.AddIdentityServices(Configuration.GetConnectionString("Master"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,6 +41,13 @@ namespace EamaShop.Identity.API
                 app.UseDefaultSwaggerAndDev("IdentityService");
             }
             app.UseAll();
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                scope.ServiceProvider
+                    .GetRequiredService<DbContext>()
+                    .Database.EnsureCreated();
+            }
         }
     }
 }

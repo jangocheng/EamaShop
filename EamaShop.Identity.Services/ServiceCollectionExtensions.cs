@@ -1,11 +1,13 @@
-﻿using EamaShop.Identity.Services.Respository;
+﻿using EamaShop.Identity.Services;
+using EamaShop.Identity.Services.Respository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace EamaShop.Identity.Services
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {
@@ -21,8 +23,9 @@ namespace EamaShop.Identity.Services
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            services.AddSingleton<IPasswordEncryptor, PasswordEncryptor>();
-            services.AddSingleton<ILoginService, LoginService>();
+            services.TryAddSingleton<IPasswordEncryptor, PasswordEncryptor>();
+            services.TryAddScoped<ILoginService, LoginService>();
+            services.TryAddScoped<IRegisterService, RegisterService>();
 
             services.AddDbContext<UserContext>(opt =>
             {
@@ -32,7 +35,6 @@ namespace EamaShop.Identity.Services
             services.AddScoped<DbContext>(x => x.GetRequiredService<UserContext>());
 
             services.AddSingleton<IUserTokenFactory, UserTokenFactory>();
-
             return services;
         }
     }

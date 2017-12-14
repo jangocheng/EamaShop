@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using EamaShop.Identity.API.Dto;
+using Microsoft.Extensions.DependencyInjection;
+using EamaShop.Identity.Services;
 
 namespace EamaShop.Identity.API.Controllers
 {
@@ -19,8 +22,18 @@ namespace EamaShop.Identity.API.Controllers
         /// <param name="parameters"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Register()
+        public async Task<IActionResult> Register(UserRegisterDto parameters)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var service = HttpContext.RequestServices.GetRequiredService<IRegisterService>();
+
+            await service.RegisterAsync(
+                account: parameters.AccountName,
+                 password: parameters.Password);
+
             return Ok();
         }
 
@@ -30,8 +43,9 @@ namespace EamaShop.Identity.API.Controllers
         /// <returns></returns>
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Details([FromHeader(Name = "Authorization")]string token)
+        public async Task<IActionResult> Details()
         {
+
             return Ok();
         }
     }

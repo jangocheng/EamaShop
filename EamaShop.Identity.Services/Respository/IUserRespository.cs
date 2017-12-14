@@ -1,7 +1,9 @@
 ﻿using EamaShop.Identity.DataModel;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EamaShop.Identity.Services.Respository
@@ -17,5 +19,11 @@ namespace EamaShop.Identity.Services.Respository
         Task<ApplicationUser> FindByIdentifier(string name);
 
         void UpdateUser(ApplicationUser user);
+
+        Task<bool> Contains(Expression<Func<ApplicationUser, bool>> predicate, 
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<ApplicationUser> AddAsync(ApplicationUser user,
+             CancellationToken cancellationToken = default(CancellationToken));
     }
 }

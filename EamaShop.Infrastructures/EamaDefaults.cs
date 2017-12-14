@@ -14,5 +14,7 @@ namespace System
         /// 授权的对象，授权的是所有的 Api
         /// </summary>
         public const string Audience = "Api";
+
+        public const string JwtBearerTokenKey = "ProEMLh5e_qnzdNU";
     }
 }
