@@ -36,3 +36,8 @@ services:
     build:
       context: ./EamaShop.Basket.API
       dockerfile: Dockerfile
+  eamashop.merchant.api:
+    image: eamashop.merchant.api
+    build:
+      context: ./EamaShop.Merchant.API
+      dockerfile: Dockerfile

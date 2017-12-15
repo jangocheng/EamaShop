@@ -7,14 +7,18 @@ using Microsoft.EntityFrameworkCore;
 using EamaShop.Identity.Services.Respository.EntityConfig;
 using System.Linq.Expressions;
 using System.Threading;
+using System.Linq;
 
 namespace EamaShop.Identity.Services.Respository
 {
-    public class UserContext : DbContext, IUserRespository, IUnitOfWork
+    public class UserContext : DbContext,
+        IUserRespository,
+        IUnitOfWork,
+        IMerchantRespository
     {
 
         public DbSet<ApplicationUser> User { get; set; }
-
+        public DbSet<Merchant> Merchant { get; set; }
         IUnitOfWork IUserRespository.UnitOfWork => this;
 
         public UserContext(DbContextOptions<UserContext> options) : base(options)
@@ -75,8 +79,28 @@ namespace EamaShop.Identity.Services.Respository
             cancellationToken.ThrowIfCancellationRequested();
 
             var entry = await User.AddAsync(user, cancellationToken);
-            
+
             return entry.Entity;
+        }
+
+        async Task<Merchant> IMerchantRespository.AddAsync(Merchant merchant, CancellationToken cancellationToken)
+        {
+            if (merchant == null)
+            {
+                throw new ArgumentNullException(nameof(merchant));
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var m = await AddAsync(merchant);
+
+            return m.Entity;
+        }
+
+        async Task<IEnumerable<Merchant>> IMerchantRespository.GetByUIdAsync(long uid, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await Merchant.Where(x => x.CreatorUId == uid).ToArrayAsync();
         }
     }
 }

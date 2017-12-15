@@ -53,7 +53,7 @@ namespace EamaShop.Identity.Services.Respository.EntityConfig
 
             builder.Property(x => x.Sexy)
                 .IsRequired()
-                .HasDefaultValue(Gender.Male);
+                .HasDefaultValue(UserGender.Male);
 
             builder.Property(x => x.Salt).IsRequired();
         }

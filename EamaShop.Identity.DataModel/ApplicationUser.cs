@@ -1,4 +1,5 @@
-﻿using EamaShop.Infrastructures;
+﻿using EamaShop.Identity.Common;
+using EamaShop.Infrastructures;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -29,7 +30,7 @@ namespace EamaShop.Identity.DataModel
         [Required]
         public string Salt { get; set; }
         [Required]
-        public Gender Sexy { get; set; }
+        public UserGender Sexy { get; set; }
 
         [Required]
         public DateTime CreateTime { get; set; }

@@ -11,6 +11,7 @@ using System.Net;
 using EamaShop.Catalog.API.DTO;
 using Microsoft.AspNetCore.Authorization;
 using EamaShop.Infrastructures;
+using EamaShop.Identity.Common;
 
 namespace EamaShop.Catalog.API.Controllers
 {

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using EamaShop.Identity.API.Dto;
 using Microsoft.Extensions.DependencyInjection;
 using EamaShop.Identity.Services;
+using EamaShop.Identity.Common;
 
 namespace EamaShop.Identity.API.Controllers
 {
@@ -46,6 +47,25 @@ namespace EamaShop.Identity.API.Controllers
         public IActionResult Details()
         {
             return Ok(User.Claims.ToDictionary(x => x.Type, x => x.Value));
+        }
+        /// <summary>
+        /// 创建店铺
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("Merchant")]
+        public async Task<IActionResult> CreateMerchant(MerchantCreateDto parameters)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var service = HttpContext
+                .RequestServices
+                .GetRequiredService<ICreateMerchantService>();
+
+           await service.Create(User.GetId(), parameters.Name);
+
+            return Ok();
         }
 
         

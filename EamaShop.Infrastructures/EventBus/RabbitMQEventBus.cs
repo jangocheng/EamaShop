@@ -52,7 +52,7 @@ namespace EamaShop.Infrastructures
             using (var channel = _persistentConnection.CreateModel())
             {
                 var eventName = eventMessage.GetType().Name;
-
+                // 声明用于发布事件的交换机
                 channel.ExchangeDeclare(exchange: BROKER_NAME,
                     type: ExchangeType.Direct);
 

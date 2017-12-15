@@ -36,7 +36,7 @@ namespace EamaShop.Identity.Services
                 Password = password,
                 HeadImageUri = "https://www.baidu.com",
                 Role = Infrastructures.UserRole.User,
-                Sexy = Infrastructures.Gender.Male,
+                Sexy = Infrastructures.UserGender.Male,
                 NickName = "",
                 Salt = salt
             };
