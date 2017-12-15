@@ -25,12 +25,6 @@ services:
       context: ./EamaShop.Identity.API
       dockerfile: Dockerfile
 
-  eamashop.webapp:
-    image: eamashop.webapp
-    build:
-      context: ./EamaShop.WebApp
-      dockerfile: Dockerfile
-
   eamashop.basket.api:
     image: eamashop.basket.api
     build:

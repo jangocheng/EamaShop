@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EamaShop.Infrastructures", "EamaShop.Infrastructures\EamaShop.Infrastructures.csproj", "{EF8CBFBC-73FB-4F70-8E62-2A39049246FA}"
 EndProject
@@ -47,11 +47,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FB22F14E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EamaShop.Infrastructure.Tests", "..\EamaShop.Infrastructure.Tests\EamaShop.Infrastructure.Tests.csproj", "{9D49600E-05E9-48CB-81C8-3D407B376A43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EamaShop.Identity.Common", "..\EamaShop.Identity.Common\EamaShop.Identity.Common.csproj", "{44F287C2-5EC5-4A8A-A059-55105AB50964}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EamaShop.Identity.Common", "..\EamaShop.Identity.Common\EamaShop.Identity.Common.csproj", "{44F287C2-5EC5-4A8A-A059-55105AB50964}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Merchant", "Merchant", "{35BC0D9E-109B-48E5-8DE4-F7D3A293EBDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EamaShop.Merchant.API", "EamaShop.Merchant.API\EamaShop.Merchant.API.csproj", "{5F77214C-7049-4223-823E-6EB7517078D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EamaShop.Merchant.API", "EamaShop.Merchant.API\EamaShop.Merchant.API.csproj", "{5F77214C-7049-4223-823E-6EB7517078D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

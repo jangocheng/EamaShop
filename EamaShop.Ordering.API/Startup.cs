@@ -47,18 +47,25 @@ namespace EamaShop.Ordering.API
             }
             app.UseAll();
 
-            // hosting create container.
-            // and copy a container.
-            // initialize startup by using initialized container.
-            // initialize copy container by using startup's ConfigureServices method.
-            // build copy container
-            // initialize app by using built copy container.
-            using (var scop = app.ApplicationServices.CreateScope())
+            try
             {
-                scop.ServiceProvider
-                    .GetRequiredService<OrderContext>()
-                    .Database
-                    .EnsureCreated();
+                // hosting create container.
+                // and copy a container.
+                // initialize startup by using initialized container.
+                // initialize copy container by using startup's ConfigureServices method.
+                // build copy container
+                // initialize app by using built copy container.
+                using (var scop = app.ApplicationServices.CreateScope())
+                {
+                    scop.ServiceProvider
+                        .GetRequiredService<OrderContext>()
+                        .Database
+                        .EnsureCreated();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
             }
         }
     }

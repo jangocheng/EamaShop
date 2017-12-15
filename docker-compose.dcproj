@@ -5,7 +5,7 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>5742780d-c305-41b8-a741-6692b42b5c44</ProjectGuid>
     <DockerLaunchBrowser>True</DockerLaunchBrowser>
-    <DockerServiceUrl>http://localhost:{ServicePort}/api/values</DockerServiceUrl>
+    <DockerServiceUrl>http://localhost:{ServicePort}/home/index</DockerServiceUrl>
     <DockerServiceName>eamashop.catelog.api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
