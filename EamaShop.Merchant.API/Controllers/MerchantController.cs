@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using EamaShop.Identity.Common;
+using EamaShop.Merchant.API.DTO;
+using EamaShop.Merchant.API.Infrastructures;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,36 +15,50 @@ namespace EamaShop.Merchant.API.Controllers
     [Route("api/[controller]")]
     public class MerchantController : Controller
     {
-        // GET: api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly MerchantContext _context;
+        public MerchantController(MerchantContext context)
         {
-            return new string[] { "value1", "value2" };
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        // GET api/values/5
+        [ResponseCache(CacheProfileName = "default")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(MerchantDto))]
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var store = await _context.FindAsync<Store>(id);
+
+            if (store == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new MerchantDto(store));
         }
 
-        // POST api/values
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         [HttpPost]
-        public void Post([FromBody]string value)
+        [ResponseCache(CacheProfileName = "default")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(MerchantDto))]
+        public async Task<IActionResult> Create([FromBody]MerchantCreateDto value)
         {
-        }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+            var entry = await _context.AddAsync(new Store()
+            {
+                Name = value.Name,
+                UId = User.GetId()
+            }, HttpContext.RequestAborted);
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+
+
+            return Ok(new MerchantDto(entry.Entity));
         }
     }
 }

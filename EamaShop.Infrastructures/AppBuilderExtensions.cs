@@ -14,6 +14,7 @@ namespace Microsoft.AspNetCore.Builder
             {
                 throw new ArgumentNullException(nameof(app));
             }
+            app.UseResponseCaching();
 
             app.UseCors("CorsPolicy");
 

@@ -42,6 +42,7 @@ namespace EamaShop.Catalog.API.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             var parentId = 0L;
             var level = 0;
             if (parameters.ParentId != null)

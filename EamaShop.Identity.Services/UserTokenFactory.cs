@@ -67,8 +67,13 @@ namespace EamaShop.Identity.Services
                     claims.Add(Create(p.Name, value.ToString(), p.PropertyType.Name));
                 }
             }
+
+            var roles = user.Role.ToString().Split(',');
             claims.Add(Create(ClaimTypes.Name, user.AccountName, ClaimValueTypes.String));
-            claims.Add(Create(ClaimTypes.Role, user.Role.ToString(), ClaimValueTypes.String));
+            Array.ForEach(roles, r =>
+            {
+                claims.Add(Create(ClaimTypes.Role, r, ClaimValueTypes.String));
+            });
 
             return new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
         }

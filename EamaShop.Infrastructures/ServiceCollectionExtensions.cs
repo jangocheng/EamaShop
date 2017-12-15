@@ -1,4 +1,5 @@
 ﻿using EamaShop.Infrastructures;
+using EamaShop.Infrastructures.HttpStandard;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
@@ -19,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 
@@ -101,8 +103,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
                 return new RabbitMQPersistentConnection(connectionFactory, logger, retryCount);
             });
-            services.AddSingleton<IEventHandlerManager, EventBusHandlerManager>();
+            services.TryAddSingleton<IEventHandlerManager, EventBusHandlerManager>();
 
+            services.AddResponseCaching();
+
+            services.TryAddSingleton<IHttpClient, StandardHttpClient>();
             return services;
         }
 

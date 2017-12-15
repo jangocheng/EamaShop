@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication;
 using EamaShop.Catalog.API.Respository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace EamaShop.Catelog.API
 {
@@ -39,6 +40,7 @@ namespace EamaShop.Catelog.API
             {
                 services.AddDefaultSwagger("Catalog Service", "", "catalog");
             }
+            var life = services.FirstOrDefault(x => x.ServiceType == typeof(IHttpContextAccessor))?.Lifetime;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
