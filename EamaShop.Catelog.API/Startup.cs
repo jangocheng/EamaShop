@@ -40,7 +40,6 @@ namespace EamaShop.Catelog.API
             {
                 services.AddDefaultSwagger("Catalog Service", "", "catalog");
             }
-            var life = services.FirstOrDefault(x => x.ServiceType == typeof(IHttpContextAccessor))?.Lifetime;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
