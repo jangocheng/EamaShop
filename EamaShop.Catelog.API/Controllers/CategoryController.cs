@@ -66,7 +66,7 @@ namespace EamaShop.Catalog.API.Controllers
             };
 
             await _context.AddAsync(category, HttpContext.RequestAborted);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(HttpContext.RequestAborted);
 
             return Ok();
         }
