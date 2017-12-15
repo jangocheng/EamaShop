@@ -13,12 +13,11 @@ namespace EamaShop.Identity.Services.Respository
 {
     public class UserContext : DbContext,
         IUserRespository,
-        IUnitOfWork,
-        IMerchantRespository
+        IUnitOfWork
+        
     {
 
         public DbSet<ApplicationUser> User { get; set; }
-        public DbSet<Merchant> Merchant { get; set; }
         IUnitOfWork IUserRespository.UnitOfWork => this;
 
         public UserContext(DbContextOptions<UserContext> options) : base(options)
@@ -83,24 +82,6 @@ namespace EamaShop.Identity.Services.Respository
             return entry.Entity;
         }
 
-        async Task<Merchant> IMerchantRespository.AddAsync(Merchant merchant, CancellationToken cancellationToken)
-        {
-            if (merchant == null)
-            {
-                throw new ArgumentNullException(nameof(merchant));
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var m = await AddAsync(merchant);
-
-            return m.Entity;
-        }
-
-        async Task<IEnumerable<Merchant>> IMerchantRespository.GetByUIdAsync(long uid, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return await Merchant.Where(x => x.CreatorUId == uid).ToArrayAsync();
-        }
+       
     }
 }

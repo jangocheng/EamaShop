@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection
             });
             services.AddScoped<IUserRespository>(x => x.GetRequiredService<UserContext>());
             services.AddScoped<DbContext>(x => x.GetRequiredService<UserContext>());
-            services.AddScoped<IMerchantRespository>(sp => sp.GetRequiredService<UserContext>());
+          
 
             services.AddSingleton<IUserTokenFactory, UserTokenFactory>();
             return services;
