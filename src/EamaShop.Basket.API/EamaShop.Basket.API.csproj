@@ -18,8 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\EamaShop.Identity.Common\EamaShop.Identity.Common.csproj" />
-    <ProjectReference Include="..\EamaShop.Infrastructures\EamaShop.Infrastructures.csproj" />
+    <ProjectReference Include="..\EamaShop.Identity.Common\EamaShop.Identity.Common.csproj" />
   </ItemGroup>
 
 </Project>

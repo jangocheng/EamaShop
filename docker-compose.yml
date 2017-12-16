@@ -14,7 +14,7 @@ services:
     build:
       context: ./EamaShop.Delievery.API
       dockerfile: Dockerfile
- 
+  
   eamashop.ordering.api:
     image: eamashop.ordering.api
     build:
@@ -30,6 +30,7 @@ services:
       dockerfile: Dockerfile
   eamashop.identity.api.db:
     image: postgres
+
 
   eamashop.basket.api:
     image: eamashop.basket.api
