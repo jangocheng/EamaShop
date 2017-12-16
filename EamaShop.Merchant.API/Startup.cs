@@ -51,7 +51,7 @@ namespace EamaShop.Merchant.API
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 scope.ServiceProvider
-                    .GetRequiredService<DbContext>()
+                    .GetRequiredService<MerchantContext>()
                     .Database.EnsureCreated();
             }
         }
