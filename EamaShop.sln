@@ -45,6 +45,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Delivery", "Delivery", "{F3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Merchant", "Merchant", "{7B1694F1-2815-4B29-8597-B90289E246BB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EamaShop.Ordering.Service", "src\EamaShop.Ordering.Service\EamaShop.Ordering.Service.csproj", "{8EC2F318-6A02-4CE4-A21C-8FDA17500D77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +105,10 @@ Global
 		{37D72EA0-600B-4A5C-A1D2-483E7EBE2425}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37D72EA0-600B-4A5C-A1D2-483E7EBE2425}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37D72EA0-600B-4A5C-A1D2-483E7EBE2425}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EC2F318-6A02-4CE4-A21C-8FDA17500D77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EC2F318-6A02-4CE4-A21C-8FDA17500D77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EC2F318-6A02-4CE4-A21C-8FDA17500D77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EC2F318-6A02-4CE4-A21C-8FDA17500D77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -126,6 +132,7 @@ Global
 		{37D72EA0-600B-4A5C-A1D2-483E7EBE2425} = {A5FDB8DC-834C-4741-AA05-782BACFC2D86}
 		{F3A67419-F86A-412A-9C4F-B6556D06579B} = {79911523-B52C-4094-94AA-D6F270D007F1}
 		{7B1694F1-2815-4B29-8597-B90289E246BB} = {79911523-B52C-4094-94AA-D6F270D007F1}
+		{8EC2F318-6A02-4CE4-A21C-8FDA17500D77} = {A5FDB8DC-834C-4741-AA05-782BACFC2D86}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F7C86DBF-8B77-4CF9-AC60-E9969982AF2C}
