@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using EamaShop.Ordering.Service;
 
 namespace EamaShop.Ordering.API.Controllers
 {
@@ -13,6 +14,11 @@ namespace EamaShop.Ordering.API.Controllers
     [Authorize]
     public class OrderController : Controller
     {
+        private readonly IOrderFactory<OrderEntity> _factory;
+        public OrderController(IOrderFactory<OrderEntity> factory)
+        {
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
         /// <summary>
         /// 下单
         /// </summary>

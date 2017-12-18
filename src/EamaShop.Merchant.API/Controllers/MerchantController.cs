@@ -56,8 +56,6 @@ namespace EamaShop.Merchant.API.Controllers
                 UId = User.GetId()
             }, HttpContext.RequestAborted);
 
-
-
             return Ok(new MerchantDto(entry.Entity));
         }
     }

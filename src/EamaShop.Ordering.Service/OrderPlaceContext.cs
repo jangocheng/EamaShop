@@ -12,7 +12,7 @@ namespace EamaShop.Ordering.Service
     {
         public OrderPlaceContext(
             long buyerUId,
-            string receivingAddress,
+            OrderPlaceReceiving receivingAddress,
             IEnumerable<OrderPlaceProduct> products,
             string remarks = "")
         {
@@ -33,7 +33,7 @@ namespace EamaShop.Ordering.Service
         /// <summary>
         /// 收货地址信息
         /// </summary>
-        public string ReceivingAddress { get; }
+        public OrderPlaceReceiving ReceivingAddress { get; }
         /// <summary>
         /// 购买的商品规格列表
         /// </summary>
