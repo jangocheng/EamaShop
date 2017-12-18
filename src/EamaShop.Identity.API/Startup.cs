@@ -41,12 +41,19 @@ namespace EamaShop.Identity.API
                 app.UseDefaultSwaggerAndDev("IdentityService");
             }
             app.UseAll();
-            
-            using (var scope = app.ApplicationServices.CreateScope())
+
+            try
             {
-                scope.ServiceProvider
-                    .GetRequiredService<DbContext>()
-                    .Database.EnsureCreated();
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    scope.ServiceProvider
+                        .GetRequiredService<DbContext>()
+                        .Database.EnsureCreated();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
         }
     }

@@ -48,11 +48,18 @@ namespace EamaShop.Merchant.API
             }
             app.UseAll();
 
-            using (var scope = app.ApplicationServices.CreateScope())
+            try
             {
-                scope.ServiceProvider
-                    .GetRequiredService<MerchantContext>()
-                    .Database.EnsureCreated();
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    scope.ServiceProvider
+                        .GetRequiredService<MerchantContext>()
+                        .Database.EnsureCreated();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
             }
         }
     }
