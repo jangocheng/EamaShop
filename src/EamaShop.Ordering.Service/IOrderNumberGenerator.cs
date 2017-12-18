@@ -4,9 +4,9 @@ using System.Text;
 
 namespace EamaShop.Ordering.Service
 {
-    public interface IOrderAggregateRoot
+    public interface IOrderNumberGenerator
     {
-        long Id { get; }
-        string OrderNumber { get; }
+        string Gen();
+        string Gen(int storeId);
     }
 }

@@ -4,4 +4,9 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EamaShop.Infrastructures\EamaShop.Infrastructures.csproj" />
+    <ProjectReference Include="..\EamaShop.Ordering.Respository\EamaShop.Ordering.Respository.csproj" />
+  </ItemGroup>
+
 </Project>
