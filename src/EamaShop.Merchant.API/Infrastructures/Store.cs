@@ -12,5 +12,9 @@ namespace EamaShop.Merchant.API.Infrastructures
         public long UId { get; set; }
 
         public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public string LogoUri { get; set; }
     }
 }

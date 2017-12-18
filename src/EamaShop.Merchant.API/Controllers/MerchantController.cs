@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using EamaShop.Identity.Common;
 using EamaShop.Merchant.API.DTO;
 using EamaShop.Merchant.API.Infrastructures;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -24,7 +25,7 @@ namespace EamaShop.Merchant.API.Controllers
         [ResponseCache(CacheProfileName = "default")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(MerchantDto))]
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(long id)
         {
             var store = await _context.FindAsync<Store>(id);
 
@@ -37,12 +38,12 @@ namespace EamaShop.Merchant.API.Controllers
         }
 
         /// <summary>
-        /// 
+        /// 申请创建店铺
         /// </summary>
         /// <param name="value"></param>
         [HttpPost]
-        [ResponseCache(CacheProfileName = "default")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(MerchantDto))]
+        [Authorize]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Create([FromBody]MerchantCreateDto value)
         {
             if (!ModelState.IsValid)
@@ -50,13 +51,22 @@ namespace EamaShop.Merchant.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var entry = await _context.AddAsync(new Store()
+            var entry = await _context.AddAsync(new StoreCreateApply()
             {
                 Name = value.Name,
-                UId = User.GetId()
+                UId = User.GetId(),
+                Description = value.Description,
+                LogoUri = value.LogoUri,
+                IsCreate = true,
+                StoreId = null,
+                CreateTime = DateTime.Now,
+                AuditStatus = AuditStatus.Waiting
             }, HttpContext.RequestAborted);
 
-            return Ok(new MerchantDto(entry.Entity));
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "您的申请已提交" });
         }
+        
     }
 }

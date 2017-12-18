@@ -14,6 +14,8 @@ namespace EamaShop.Merchant.API.DTO
         {
             _store = store ?? throw new ArgumentNullException(nameof(store));
             Name = _store.Name;
+            LogoUri = store.LogoUri;
+            Description = store.Description;
         }
     }
 }
