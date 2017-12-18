@@ -10,140 +10,93 @@ using System.Threading.Tasks;
 using System.Net.Http.Headers;
 using System.Net;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Primitives;
 
 namespace EamaShop.Infrastructures.HttpStandard
 {
-    public class StandardHttpClient : IHttpClient
+    public class StandardHttpClient<TDescriptor> : IHttpClient<TDescriptor>
+        where TDescriptor : MicroserviceDescriptor
     {
-        private readonly HttpClient _client;
-        private readonly ILogger<StandardHttpClient> _logger;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        //private readonly DiagnosticListener _diagnostic;
-        public StandardHttpClient(ILogger<StandardHttpClient> logger,
+        protected HttpClient HttpClient { get; }
+        private readonly ILogger _logger;
+        public StandardHttpClient(
+            TDescriptor microserviceDescriptor,
+            ILogger<StandardHttpClient<TDescriptor>> logger,
             IHttpContextAccessor httpContextAccessor)
         {
-            _client = new HttpClient();
+            MicroserviceDescriptor = microserviceDescriptor ?? throw new ArgumentNullException(nameof(microserviceDescriptor));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-            //_diagnostic = diagnostic ?? throw new ArgumentNullException(nameof(diagnostic));
-        }
 
-        Task<HttpResponseMessage> IHttpClient.DeleteAsync(string requestUri,
-              string authorizationToken,
-              string authorizationMethod,
-              CancellationToken cancellationToken)
-        {
-            if (requestUri == null)
+            HttpClient = new HttpClient(new SetAuthorizationHandler(httpContextAccessor))
             {
-                throw new ArgumentNullException(nameof(requestUri));
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, requestUri);
-
-            using (var scope = _logger.BeginScope(requestMessage))
-            {
-
-                SetHeaders(requestMessage);
-
-                if (authorizationToken != null)
-                {
-                    requestMessage.Headers.Authorization =
-                        new AuthenticationHeaderValue(authorizationMethod, authorizationToken);
-                }
-
-                return _client.SendAsync(requestMessage, cancellationToken);
-            }
-        }
-
-        Task<HttpResponseMessage> IHttpClient.GetAsync(string requestUri, string authorizationToken, string authorizationMethod, CancellationToken cancellationToken)
-        {
-            if (requestUri == null)
-            {
-                throw new ArgumentNullException(nameof(requestUri));
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            var requestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
-
-            using (var scope = _logger.BeginScope(requestMessage))
-            {
-
-                SetHeaders(requestMessage);
-
-                if (authorizationToken != null)
-                {
-                    requestMessage.Headers.Authorization =
-                        new AuthenticationHeaderValue(authorizationMethod, authorizationToken);
-                }
-
-                return _client.SendAsync(requestMessage, cancellationToken);
-            }
-        }
-
-        Task<HttpResponseMessage> IHttpClient.PostAsync<Parameter>(string requestUri, Parameter parameter, string authorizationToken, string authorizationMethod, CancellationToken cancellationToken)
-        {
-            if (requestUri == null)
-            {
-                throw new ArgumentNullException(nameof(requestUri));
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
-            requestMessage.Content =
-                new StringContent(JsonConvert.SerializeObject(parameter), Encoding.UTF8, "application/json");
-            using (var scope = _logger.BeginScope(requestMessage))
-            {
-
-                SetHeaders(requestMessage);
-
-                if (authorizationToken != null)
-                {
-                    requestMessage.Headers.Authorization =
-                        new AuthenticationHeaderValue(authorizationMethod, authorizationToken);
-                }
-
-                return _client.SendAsync(requestMessage, cancellationToken);
-            }
-        }
-
-        Task<HttpResponseMessage> IHttpClient.PutAsync< Parameter>(string requestUri, Parameter parameter, string authorizationToken, string authorizationMethod, CancellationToken cancellationToken)
-        {
-            if (requestUri == null)
-            {
-                throw new ArgumentNullException(nameof(requestUri));
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            var requestMessage = new HttpRequestMessage(HttpMethod.Put, requestUri);
-            requestMessage.Content =
-                new StringContent(JsonConvert.SerializeObject(parameter), Encoding.UTF8, "application/json");
-            using (var scope = _logger.BeginScope(requestMessage))
-            {
-
-                SetHeaders(requestMessage);
-
-                if (authorizationToken != null)
-                {
-                    requestMessage.Headers.Authorization =
-                        new AuthenticationHeaderValue(authorizationMethod, authorizationToken);
-                }
-
-                return _client.SendAsync(requestMessage, cancellationToken);
-            }
-        }
-
-        private void SetHeaders(HttpRequestMessage requestMessage)
-        {
-            var authorization = _httpContextAccessor
-                .HttpContext.Request.Headers["Authorization"];
-
-            if (!string.IsNullOrEmpty(authorization))
-            {
-                requestMessage.Headers.Add("Authorization", new List<string> { authorization });
-            }
-
-            requestMessage.Headers.CacheControl = new CacheControlHeaderValue()
+                BaseAddress = MicroserviceDescriptor.Host
+            };
+            HttpClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue()
             {
                 NoCache = true,
                 NoStore = true
             };
+        }
+        public TDescriptor MicroserviceDescriptor { get; }
+
+        public Task<HttpResponseMessage> DeleteAsync(string requestUri, CancellationToken cancellationToken = default(CancellationToken))
+        => HttpClient.DeleteAsync(requestUri, cancellationToken);
+
+
+        public Task<HttpResponseMessage> GetAsync(string requestUri, CancellationToken cancellationToken = default(CancellationToken))
+            => HttpClient.DeleteAsync(requestUri, cancellationToken);
+
+        public Task<HttpResponseMessage> PostAsync<TParameter>(string requestUri, TParameter parameters, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (requestUri == null)
+            {
+                throw new ArgumentNullException(nameof(requestUri));
+            }
+            using (_logger.BeginScope(requestUri))
+            {
+                _logger.LogTrace("准备发送请求");
+                var content = JsonConvert.SerializeObject(parameters);
+                var body = new StringContent(content, Encoding.UTF8, "application/json");
+
+                _logger.LogTrace($"请求正文：{content}");
+
+                return HttpClient.PostAsync(requestUri, body, cancellationToken);
+            }
+        }
+
+        public Task<HttpResponseMessage> PutAsync<TParameter>(string requestUri, TParameter parameters, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (requestUri == null)
+            {
+                throw new ArgumentNullException(nameof(requestUri));
+            }
+            var content = JsonConvert.SerializeObject(parameters);
+            var body = new StringContent(content, Encoding.UTF8, "application/json");
+
+            return HttpClient.PutAsync(requestUri, body, cancellationToken);
+        }
+
+        private class SetAuthorizationHandler : HttpClientHandler
+        {
+            private readonly IHttpContextAccessor _httpContextAccessor;
+
+            public SetAuthorizationHandler(IHttpContextAccessor httpContextAccessor)
+            {
+                _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+            }
+
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                var authorization = _httpContextAccessor.HttpContext.Request.Headers["Authorization"];
+
+                if (!StringValues.IsNullOrEmpty(authorization) && authorization.Count > 1)
+                {
+                    var schame = authorization[0];
+                    var value = authorization[1];
+                    request.Headers.Authorization = new AuthenticationHeaderValue(schame, value);
+                }
+                return base.SendAsync(request, cancellationToken);
+            }
         }
     }
 }
