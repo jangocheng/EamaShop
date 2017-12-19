@@ -23,8 +23,21 @@ namespace EamaShop.Identity.Common
     [Flags]
     public enum UserRole
     {
-        User = 1,
-        Merchant = 2,
-        Admin = 4
+        /// <summary>
+        /// 该用户的角色为普通用户，这是所有用户角色必须具备的一种角色
+        /// </summary>
+        User = 1,//2的0次方
+        /// <summary>
+        /// 该用户是商户，或者具有门店的用户
+        /// </summary>
+        Merchant = 2,// 2的1次方
+        /// <summary>
+        /// 该用户是超级管理员，可以登陆和访问ERP
+        /// </summary>
+        Admin = 4,// 2的2次方
+        /// <summary>
+        /// 该用户是VIP
+        /// </summary>
+        Vip = 8// 2的三次方
     }
 }

@@ -1,4 +1,4 @@
-﻿using EamaShop.Infrastructures.ExtensionModels;
+﻿using EamaShop.Infrastructures;
 using System;
 using System.Collections.Generic;
 using System.Text;
