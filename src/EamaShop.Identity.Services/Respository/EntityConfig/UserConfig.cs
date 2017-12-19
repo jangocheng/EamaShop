@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata;
 using EamaShop.Infrastructures;
 using EamaShop.Identity.Common;
+using EamaShop.Infrastructures.Enums;
 
 namespace EamaShop.Identity.Services.Respository.EntityConfig
 {
@@ -54,7 +55,7 @@ namespace EamaShop.Identity.Services.Respository.EntityConfig
 
             builder.Property(x => x.Sexy)
                 .IsRequired()
-                .HasDefaultValue(UserGender.Male);
+                .HasDefaultValue(Gender.Male);
 
             builder.Property(x => x.Salt).IsRequired();
         }

@@ -7,13 +7,7 @@ services:
       context: ./src/EamaShop.Catalog.API
       dockerfile: Dockerfile
     depends_on:
-      - eamashop.catalog.api.db
-  eamashop.catalog.api.db:
-    image: mysql
-    ports:
-      - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=123456
+      - mysql.db
 
   eamashop.delievery.api:
     image: eamashop.delievery.api
@@ -26,29 +20,16 @@ services:
     build:
       context: ./src/EamaShop.Ordering.API
       dockerfile: Dockerfile
-  eamashop.ordering.api.db:
-    image: microsoft/mssql-server-linux
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=Wyf123456
-    ports:
-      - "1455:1433"
+    depends_on:
+      - mssql.db
 
   eamashop.identity.api:
     image: eamashop.identity.api
     build:
       context: ./src/EamaShop.Identity.API
       dockerfile: Dockerfile
-    ports:
-      - "59322:80"
     depends_on:
-      - eamashop.identity.api.db
-  eamashop.identity.api.db:
-    image: postgres
-    environment: 
-      - POSTGRES_PASSWORD=123456
-    ports:
-      - "5666:5432"
+      - mssql.db
 
   eamashop.basket.api:
     image: eamashop.basket.api
@@ -62,16 +43,7 @@ services:
       context: ./src/EamaShop.Merchant.API
       dockerfile: Dockerfile
     depends_on:
-      - eamashop.merchant.api.db
-    ports:
-      - "59423:80"
-  eamashop.merchant.api.db:
-    image: microsoft/mssql-server-linux
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=Wyf123456
-    ports:
-      - "1433:1433"
+      - mssql.db
 
   visualizer:
     image: dockersamples/visualizer
@@ -79,3 +51,23 @@ services:
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+
+  mysql.db:
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+  postgres.db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=123456
+    ports:
+      - "5432:5432"
+  mssql.db:
+    image: microsoft/mssql-server-linux
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Wyf123456
+    ports:
+      - "1433:1433"

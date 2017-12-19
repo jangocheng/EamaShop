@@ -72,7 +72,7 @@ namespace EamaShop.Infrastructures.HttpStandard
             }
             var content = JsonConvert.SerializeObject(parameters);
             var body = new StringContent(content, Encoding.UTF8, "application/json");
-
+            inter
             return HttpClient.PutAsync(requestUri, body, cancellationToken);
         }
 

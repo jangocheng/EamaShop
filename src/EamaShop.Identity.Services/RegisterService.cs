@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using EamaShop.Identity.DataModel;
 using EamaShop.Identity.Common;
+using EamaShop.Infrastructures.Enums;
 
 namespace EamaShop.Identity.Services
 {
@@ -37,7 +38,7 @@ namespace EamaShop.Identity.Services
                 Password = password,
                 HeadImageUri = "https://www.baidu.com",
                 Role = UserRole.User,
-                Sexy = UserGender.Male,
+                Sexy = Gender.Male,
                 NickName = "",
                 Salt = salt
             };
