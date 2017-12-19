@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace EamaShop.Infrastructures.ExtensionModels
+namespace EamaShop.Infrastructures
 {
     /// <summary>
     /// 表示用于进行 Aes 加密的源字符串

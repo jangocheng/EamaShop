@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace EamaShop.Infrastructures.ExtensionModels
+namespace EamaShop.Infrastructures
 {
     /// <summary>
     /// 表示被AES加密后的字符串

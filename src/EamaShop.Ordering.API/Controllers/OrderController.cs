@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using EamaShop.Ordering.Service;
+using EamaShop.Ordering.API.Dto;
+using EamaShop.Identity.Common;
 
 namespace EamaShop.Ordering.API.Controllers
 {
@@ -24,8 +26,27 @@ namespace EamaShop.Ordering.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Place()
+        public async Task<IActionResult> Place(OrderPlaceDTO parameters)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(parameters);
+            }
+
+            var receiving = new OrderPlaceReceiving(parameters.Country,
+                parameters.City,
+                parameters.Province,
+                parameters.Area,
+                parameters.Street,
+                parameters.HouseNumber,
+                parameters.Receiver,
+                parameters.ContactPhone);
+
+            var products = parameters.Products
+                .Select(x => new OrderPlaceProduct(x.ProductId, x.SpecificationId));
+
+            var context = new OrderPlaceContext(User.GetId(), receiving, products, parameters.Remarks);
+            var order = await _factory.Place(context);
             return Ok();
         }
         /// <summary>

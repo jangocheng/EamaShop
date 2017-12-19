@@ -107,7 +107,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddResponseCaching();
 
-            services.TryAddSingleton<IHttpClient, StandardHttpClient>();
+            services.TryAddSingleton(typeof(IHttpClient<>), typeof(StandardHttpClient<>));
+            services.TryAddSingleton(MicroserviceDescriptor.Catalog);
+            services.TryAddSingleton(MicroserviceDescriptor.Merchant);
+
             return services;
         }
 

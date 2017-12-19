@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EamaShop.Identity.Common\EamaShop.Identity.Common.csproj" />
     <ProjectReference Include="..\EamaShop.Infrastructures\EamaShop.Infrastructures.csproj" />
     <ProjectReference Include="..\EamaShop.Ordering.Respository\EamaShop.Ordering.Respository.csproj" />
     <ProjectReference Include="..\EamaShop.Ordering.Service\EamaShop.Ordering.Service.csproj" />
