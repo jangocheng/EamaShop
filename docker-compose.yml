@@ -1,13 +1,19 @@
 version: '3'
 
 services:
-  eamashop.catelog.api:
-    image: eamashop.catelog.api
+  eamashop.catalog.api:
+    image: eamashop.catalog.api
     build:
-      context: ./src/EamaShop.Catelog.API
+      context: ./src/EamaShop.Catalog.API
       dockerfile: Dockerfile
-  eamashop.catelog.api.db:
+    depends_on:
+      - eamashop.catalog.api.db
+  eamashop.catalog.api.db:
     image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
 
   eamashop.delievery.api:
     image: eamashop.delievery.api
@@ -22,15 +28,27 @@ services:
       dockerfile: Dockerfile
   eamashop.ordering.api.db:
     image: microsoft/mssql-server-linux
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Wyf123456
+    ports:
+      - "1455:1433"
 
   eamashop.identity.api:
     image: eamashop.identity.api
     build:
       context: ./src/EamaShop.Identity.API
       dockerfile: Dockerfile
+    ports:
+      - "59322:80"
+    depends_on:
+      - eamashop.identity.api.db
   eamashop.identity.api.db:
     image: postgres
-
+    environment: 
+      - POSTGRES_PASSWORD=123456
+    ports:
+      - "5666:5432"
 
   eamashop.basket.api:
     image: eamashop.basket.api
@@ -43,5 +61,21 @@ services:
     build:
       context: ./src/EamaShop.Merchant.API
       dockerfile: Dockerfile
+    depends_on:
+      - eamashop.merchant.api.db
+    ports:
+      - "59423:80"
   eamashop.merchant.api.db:
     image: microsoft/mssql-server-linux
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Wyf123456
+    ports:
+      - "1433:1433"
+
+  visualizer:
+    image: dockersamples/visualizer
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"

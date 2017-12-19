@@ -44,7 +44,7 @@ namespace EamaShop.Catalog.API.Controllers
             if (parameters.PictureUris
                 .Any(x => !Uri.IsWellFormedUriString(x, UriKind.Absolute)))
             {
-                string message = "There are pictures which is not a validate uri string";
+                var message = "There are pictures which is not a validate uri string";
                 ModelState.AddModelError("PictureUris", message);
                 return BadRequest(ModelState);
             }

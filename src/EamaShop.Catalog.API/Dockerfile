@@ -3,4 +3,4 @@ ARG source
 WORKDIR /app
 EXPOSE 80
 COPY ${source:-obj/Docker/publish} .
-ENTRYPOINT ["dotnet", "EamaShop.Catelog.API.dll"]
+ENTRYPOINT ["dotnet", "EamaShop.Catalog.API.dll"]
