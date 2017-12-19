@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\EamaShop.Identity.Common\EamaShop.Identity.Common.csproj" />
     <ProjectReference Include="..\..\src\EamaShop.Infrastructures\EamaShop.Infrastructures.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructures\EamaShop.Infrastructures.Enums\EamaShop.Infrastructures.Enums.csproj" />
   </ItemGroup>
 
 </Project>

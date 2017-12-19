@@ -3,10 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
-namespace EamaShop.Identity.Common
+namespace EamaShop.Infrastructures.Enums
 {
-    public enum UserGender
+    /// <summary>
+    /// 性别枚举
+    /// </summary>
+    public enum Gender
     {
+        /// <summary>
+        /// 男
+        /// </summary>
         [DisplayName("正太")]
         Male,
         /// <summary>

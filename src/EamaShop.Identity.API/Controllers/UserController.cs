@@ -9,6 +9,7 @@ using EamaShop.Identity.API.Dto;
 using Microsoft.Extensions.DependencyInjection;
 using EamaShop.Identity.Services;
 using EamaShop.Identity.Common;
+using EamaShop.Infrastructures.Enums;
 
 namespace EamaShop.Identity.API.Controllers
 {

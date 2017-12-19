@@ -1,5 +1,6 @@
 using EamaShop.Identity.Common;
 using EamaShop.Infrastructures;
+using EamaShop.Infrastructures.Enums;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Extensions;

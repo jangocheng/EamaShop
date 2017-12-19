@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace EamaShop.Identity.Common
+namespace EamaShop.Infrastructures.Enums
 {
     /// <summary>
-    /// 用户角色
+    /// 易玛- 用户角色枚举
     /// <para></para>
-    /// 此枚举使用了位域的支持，以满足同一个用户的多角色需求，该对象应该在用户领域使用，对于DTO对象，应该使用数组的形式表达多个角色
+    /// 此枚举使用了位域的支持，以满足同一个用户的多角色需求
     /// </summary>
     /// <remarks>不要修改该枚举的常量值，或确保以2的n次方进行赋值</remarks>
     /// <example>
