@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace EamaShop.Merchant.API.Infrastructures
+namespace EamaShop.Infrastructures.Enums
 {
+    /// <summary>
+    /// 审核状态 审核的进度
+    /// </summary>
     public enum AuditStatus
     {
         /// <summary>
