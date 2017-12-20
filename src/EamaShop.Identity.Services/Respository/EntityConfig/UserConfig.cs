@@ -6,7 +6,6 @@ using System.Text;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Metadata;
 using EamaShop.Infrastructures;
-using EamaShop.Identity.Common;
 using EamaShop.Infrastructures.Enums;
 
 namespace EamaShop.Identity.Services.Respository.EntityConfig

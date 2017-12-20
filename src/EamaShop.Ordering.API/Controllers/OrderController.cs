@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using EamaShop.Ordering.Service;
 using EamaShop.Ordering.API.Dto;
-using EamaShop.Identity.Common;
+using System.Security.Claims;
 
 namespace EamaShop.Ordering.API.Controllers
 {

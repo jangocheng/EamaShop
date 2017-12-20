@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using EamaShop.Identity.DataModel;
-using EamaShop.Identity.Common;
 using EamaShop.Infrastructures.Enums;
 
 namespace EamaShop.Identity.Services
@@ -20,7 +19,9 @@ namespace EamaShop.Identity.Services
             _passwordEncryptor = passwordEncryptor ?? throw new ArgumentNullException(nameof(passwordEncryptor));
         }
 
-        public async Task RegisterAsync(string account, string password, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task RegisterAsync(string account, 
+            string password, 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             var hasRegistered = await _respository.Contains(x => x.AccountName == account);
 
@@ -45,7 +46,7 @@ namespace EamaShop.Identity.Services
 
             await _respository.AddAsync(user);
 
-            await _respository.UnitOfWork.SaveEntitiesAsync();
+            await _respository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
         }
     }
 }

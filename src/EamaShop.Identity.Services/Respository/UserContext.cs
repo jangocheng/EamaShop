@@ -31,9 +31,9 @@ namespace EamaShop.Identity.Services.Respository
 
 
 
-        public async Task<int> SaveEntitiesAsync()
+        public async Task<int> SaveEntitiesAsync(CancellationToken cancellationToken=default(CancellationToken))
         {
-            return await SaveChangesAsync();
+            return await SaveChangesAsync(cancellationToken);
         }
 
         Task<ApplicationUser> IUserRespository.FindByIdentifier(string name)
@@ -82,6 +82,10 @@ namespace EamaShop.Identity.Services.Respository
             return entry.Entity;
         }
 
-       
+        public Task<ApplicationUser> FindById(long id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return FindAsync<ApplicationUser>(id);
+        }
     }
 }

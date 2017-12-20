@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using EamaShop.Identity.API.Dto;
 using Microsoft.Extensions.DependencyInjection;
 using EamaShop.Identity.Services;
-using EamaShop.Identity.Common;
 using EamaShop.Infrastructures.Enums;
+using System.Security.Claims;
 
 namespace EamaShop.Identity.API.Controllers
 {
@@ -35,13 +35,14 @@ namespace EamaShop.Identity.API.Controllers
 
             await service.RegisterAsync(
                 account: parameters.AccountName,
-                 password: parameters.Password);
+                 password: parameters.Password,
+                 cancellationToken: HttpContext.RequestAborted);
 
             return Ok();
         }
 
         /// <summary>
-        /// 获取详情信息
+        /// 获取当前的用户信息
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -49,16 +50,85 @@ namespace EamaShop.Identity.API.Controllers
         {
             return Ok(User.Claims.ToDictionary(x => x.Type, x => x.Value));
         }
-        [HttpPut("role")]
-        public async Task<IActionResult> Role([FromBody]IEnumerable<UserRole> roles)
+        /// <summary>
+        /// 修改用户基础信息
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody]UserPutDTO parameters)
         {
-            var service = HttpContext.RequestServices.GetRequiredService<IRoleService>();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            await service.ChangeRole(User.GetId(), roles.ToArray());
+            var userInfoService = HttpContext
+                .RequestServices
+                .GetRequiredService<IUserInfoService>();
+
+            await userInfoService.EditInfo(HttpContext.User.GetId(), (editor) =>
+             {
+                 // TODO : is it neccessary using AutoMapper instead?
+                 editor.City = parameters.City;
+                 editor.Country = parameters.Country;
+                 editor.NickName = parameters.NickName;
+                 editor.Province = parameters.Province;
+                 editor.Sexy = parameters.Sexy;
+                 editor.HeadImageUri = parameters.HeadImageUri;
+             }, HttpContext.RequestAborted);
 
             return Ok();
         }
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("password")]
+        public async Task<IActionResult> ChangePassword([FromBody]UserPasswordPutDTO parameters)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            var userInfoService = HttpContext
+                .RequestServices
+                .GetRequiredService<IUserInfoService>();
 
+            await userInfoService
+                 .ChangePasswordAsync(
+                id: HttpContext.User.GetId(),
+                password: parameters.NewPassword,
+                token: parameters.Token,
+                cancellationToken: HttpContext.RequestAborted);
+
+            return Ok();
+        }
+        /// <summary>
+        /// 绑定手机号码
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("phone")]
+        public async Task<IActionResult> BindPhone([FromBody]UserPhonePutDTO parameters)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userInfoService = HttpContext
+                .RequestServices
+                .GetRequiredService<IUserInfoService>();
+
+            await userInfoService
+                 .BindPhone(
+                id: HttpContext.User.GetId(),
+                phone: parameters.Phone,
+                verifyCode: parameters.VerifyCode,
+                cancellationToken: HttpContext.RequestAborted);
+
+            return Ok();
+        }
     }
 }

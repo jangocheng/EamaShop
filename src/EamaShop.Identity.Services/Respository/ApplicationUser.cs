@@ -1,5 +1,4 @@
-﻿using EamaShop.Identity.Common;
-using EamaShop.Infrastructures;
+﻿using EamaShop.Infrastructures;
 using EamaShop.Infrastructures.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -29,6 +28,7 @@ namespace EamaShop.Identity.DataModel
         [Url]
         public string HeadImageUri { get; set; }
         [Required]
+        [ClaimIgnoreField]
         public string Salt { get; set; }
         [Required]
         public Gender Sexy { get; set; }
@@ -40,5 +40,17 @@ namespace EamaShop.Identity.DataModel
 
         [Required]
         public UserRole Role { get; set; }
+        /// <summary>
+        /// Gets or sets which country user comes from.
+        /// </summary>
+        public string Country { get; set; }
+        /// <summary>
+        /// Gets or sets which city user comes from.
+        /// </summary>
+        public string City { get; set; }
+        /// <summary>
+        /// Gets or sets which province user comes from.
+        /// </summary>
+        public string Province { get; set; }
     }
 }

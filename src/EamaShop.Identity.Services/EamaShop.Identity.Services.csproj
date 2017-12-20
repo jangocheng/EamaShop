@@ -9,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EamaShop.Identity.DataModel\EamaShop.Identity.DataModel.csproj" />
     <ProjectReference Include="..\EamaShop.Infrastructures\EamaShop.Infrastructures.csproj" />
   </ItemGroup>
 

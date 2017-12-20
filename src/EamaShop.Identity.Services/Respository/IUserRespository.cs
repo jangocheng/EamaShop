@@ -17,7 +17,8 @@ namespace EamaShop.Identity.Services.Respository
         /// <param name="name"></param>
         /// <returns></returns>
         Task<ApplicationUser> FindByIdentifier(string name);
-
+        Task<ApplicationUser> FindById(long id,
+            CancellationToken cancellationToken = default(CancellationToken));
         void UpdateUser(ApplicationUser user);
 
         Task<bool> Contains(Expression<Func<ApplicationUser, bool>> predicate, 

@@ -1,5 +1,4 @@
-﻿using EamaShop.Identity.Common;
-using EamaShop.Infrastructures.Enums;
+﻿using EamaShop.Infrastructures.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;

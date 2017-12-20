@@ -1,4 +1,3 @@
-using EamaShop.Identity.Common;
 using EamaShop.Infrastructures;
 using EamaShop.Infrastructures.Enums;
 using Microsoft.IdentityModel.Tokens;
@@ -16,6 +15,9 @@ namespace EamaShop.Infrastructure.Tests
         [Fact]
         public void Test1()
         {
+            var a = "adasdasdasd";
+            var before = a;
+            a = "0000";
             // 1 , 11,001
 
             UserRole role = UserRole.User | UserRole.Merchant | UserRole.Admin;
@@ -32,7 +34,6 @@ namespace EamaShop.Infrastructure.Tests
             var s = role.ToString();
             var flag = Enum.TryParse<UserRole>(s, out var result);
             var newer = (UserRole)i;
-            var a = (object)null;
             //var key = "12121212121212121212121212121212";
             //var source = "this is source string";
 
