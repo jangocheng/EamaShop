@@ -7,15 +7,11 @@ using System.Threading.Tasks;
 namespace EamaShop.Merchant.API.Infrastructures
 {
     /// <summary>
-    /// 店铺创建或修改的申请
+    /// 店铺创建或修改的申请单据
     /// </summary>
     public class StoreCreateApply
     {
         public long Id { get; set; }
-        /// <summary>
-        /// 是否是创建店铺的申请
-        /// </summary>
-        public bool IsCreate { get; set; }
         /// <summary>
         /// 申请人的Id
         /// </summary>
@@ -23,19 +19,15 @@ namespace EamaShop.Merchant.API.Infrastructures
         /// <summary>
         /// 店铺名称
         /// </summary>
-        public string Name { get; set; }
+        public string StoreName { get; set; }
         /// <summary>
         /// 店铺描述
         /// </summary>
-        public string Description { get; set; }
+        public string StoreDescription { get; set; }
         /// <summary>
         /// 店铺的logo地址
         /// </summary>
-        public string LogoUri { get; set; }
-        /// <summary>
-        /// 要修改的门店Id 如果不是创建店铺的申请，则为具体值，否则为null
-        /// </summary>
-        public long? StoreId { get; set; }
+        public string StoreLogoUri { get; set; }
         /// <summary>
         /// 审核状态，同意/不同意
         /// </summary>
@@ -52,5 +44,13 @@ namespace EamaShop.Merchant.API.Infrastructures
         /// 申请的审批时间
         /// </summary>
         public DateTime? AuditTime { get; set; }
+        /// <summary>
+        /// 经营范围
+        /// </summary>
+        public string Scopes { get; set; }
+        /// <summary>
+        /// 店铺的默认掌柜
+        /// </summary>
+        public string Manager { get; set; }
     }
 }

@@ -28,12 +28,12 @@ namespace EamaShop.Merchant.API.Infrastructures
             //    .HasDefaultValue()
             //    .ValueGeneratedOnAdd()
             //    .Metadata.BeforeSaveBehavior = PropertySaveBehavior.Ignore;
-            apply.Property(x => x.Name).IsRequired();
-            apply.Property(x => x.LogoUri).IsRequired();
+            apply.Property(x => x.StoreName).IsRequired();
+            apply.Property(x => x.StoreLogoUri).IsRequired();
             apply.Property(x => x.IsCreate).HasDefaultValue(true)
                 .ValueGeneratedOnAdd()
                 .Metadata.AfterSaveBehavior = PropertySaveBehavior.Save;
-            apply.Property(x => x.Description).IsRequired();
+            apply.Property(x => x.StoreDescription).IsRequired();
 
 
             var store = modelBuilder.Entity<Store>();

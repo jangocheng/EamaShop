@@ -8,22 +8,22 @@ namespace EamaShop.Infrastructures
 {
     public class EventBusHandlerManager : IEventHandlerManager
     {
-        private readonly IDictionary<string, ISet<Type>> _handlerMaps;
+        private readonly IDictionary<Type, ISet<Type>> _handlerMaps;
         public EventBusHandlerManager()
         {
-            _handlerMaps = new Dictionary<string, ISet<Type>>();
+            _handlerMaps = new Dictionary<Type, ISet<Type>>();
         }
 
         public void AddHandler<TEvent, THandler>()
             where TEvent : IEventMetadata
-            where THandler : IEventBusEventHandler
+            where THandler : IEventBusEventHandler<TEvent>
         {
             var key = typeof(TEvent).Name;
-            if (!_handlerMaps.TryGetValue(key, out var handers))
+            if (!_handlerMaps.TryGetValue(typeof(TEvent), out var handers))
             {
                 handers = new HashSet<Type>();
                 handers.Add(typeof(THandler));
-                _handlerMaps.Add(key, handers);
+                _handlerMaps.Add(typeof(TEvent), handers);
             }
             else
             {
@@ -39,20 +39,27 @@ namespace EamaShop.Infrastructures
             _handlerMaps.Clear();
         }
 
-        public IEnumerable<Type> GetHandlers(string eventName)
+        public IEnumerable<Type> GetHandlers(string eventName, out Type eventType)
         {
-            if (_handlerMaps.TryGetValue(eventName, out var types))
+            eventType = _handlerMaps.FirstOrDefault(x => x.Key.Name == eventName).Key;
+            
+            var handers = _handlerMaps
+                .Where(x => x.Key.Name == eventName)
+                .SelectMany(x => x.Value)
+                .ToArray();
+
+            if (handers != null)
             {
-                return types;
+                return handers.ToList();
             }
             return Enumerable.Empty<Type>();
         }
 
         public void RemoveHandler<TEvent, THandler>()
             where TEvent : IEventMetadata
-            where THandler : IEventBusEventHandler
+            where THandler : IEventBusEventHandler<TEvent>
         {
-            _handlerMaps.Remove(typeof(TEvent).Name);
+            _handlerMaps.Remove(typeof(TEvent));
         }
     }
 }

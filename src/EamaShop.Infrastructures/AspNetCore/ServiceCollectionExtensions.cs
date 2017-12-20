@@ -91,9 +91,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 var config = sp.GetRequiredService<IConfiguration>();
 
                 var host = config["RabbitMQHost"];
+                var userName = config["RabbitMQUserName"] ?? "guest";
+                var password = config["RabbitMQPassword"] ?? "guest";
                 var connectionFactory = new ConnectionFactory()
                 {
-                    HostName = host ?? "localhost"
+                    HostName = host ?? "localhost",
+                    Password = password,
+                    UserName = userName
                 };
 
                 var retryCount = 5;

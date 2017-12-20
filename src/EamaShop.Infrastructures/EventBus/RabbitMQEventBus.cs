@@ -148,23 +148,24 @@ namespace EamaShop.Infrastructures
             var message = Encoding.UTF8.GetString(e.Body);
 
             await ProcessEventAsync(eventName, message);
+
+            _channel.BasicAck(e.DeliveryTag, false);
         }
 
-        // get event handler that consume the event
+
         private async Task ProcessEventAsync(string eventName, string jsonMessage)
         {
-            var handlerTypes = _manager.GetHandlers(eventName);
+            var handlerTypes = _manager.GetHandlers(eventName,out var eventType);
             using (var scope = service.CreateScope())
             {
                 foreach (var t in handlerTypes)
                 {
                     var instance = ActivatorUtilities.GetServiceOrCreateInstance(scope.ServiceProvider, t);
 
-                    var methodInfo = typeof(IEventBusEventHandler)
-                        .GetMethod(nameof(IEventBusEventHandler.HandleAsync));
-
-                    var type = methodInfo.GetGenericArguments()[0];
-                    var @event = JsonConvert.DeserializeObject(jsonMessage, type, _setting);
+                    var methodInfo = instance.GetType()
+                        .GetMethod("HandleAsync");
+                    
+                    var @event = JsonConvert.DeserializeObject(jsonMessage, eventType, _setting);
 
                     var task = (Task)methodInfo.Invoke(instance, new[] { @event });
 
@@ -172,17 +173,16 @@ namespace EamaShop.Infrastructures
                 }
             }
         }
-
         public void Unsubscribe<TEvent, TEventHandler>()
             where TEvent : IEventMetadata
-            where TEventHandler : IEventBusEventHandler
+            where TEventHandler : IEventBusEventHandler<TEvent>
         {
             _manager.RemoveHandler<TEvent, TEventHandler>();
         }
 
         public void Subscribe<TEvent, TEventHandler>()
             where TEvent : IEventMetadata
-            where TEventHandler : IEventBusEventHandler
+            where TEventHandler : IEventBusEventHandler<TEvent>
         {
             _manager.AddHandler<TEvent, TEventHandler>();
 

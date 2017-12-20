@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,6 +9,7 @@ namespace EamaShop.Infrastructures
     /// <summary>
     /// 表示用于进行 Aes 加密的源字符串
     /// </summary>
+    [DebuggerStepThrough]
     public struct AesSourceString : IEquatable<AesSourceString>
     {
         public AesSourceString(string sourceString) : this()

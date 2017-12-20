@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EamaShop.Merchant.API.DTO
 {
-    public class MerchantAuditDTO
+    public class StoreApplyPutDTO
     {
         /// <summary>
         /// 申请单的id

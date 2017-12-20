@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace EamaShop.Infrastructures
 {
-    public interface IEventBusEventHandler
+    public interface IEventBusEventHandler<TEvent>
     {
-        void SetServiceContainer(IServiceProvider serviceProvider);
-        Task HandleAsync<TEvent>(TEvent @event);
+        Task HandleAsync(TEvent @event);
     }
 }

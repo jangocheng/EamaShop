@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using EamaShop.Identity.DataModel;
 using EamaShop.Infrastructures.Enums;
+using System.Extensions;
 
 namespace EamaShop.Identity.Services
 {
@@ -23,6 +24,36 @@ namespace EamaShop.Identity.Services
             string password, 
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            await RegisterAsync(account, "", password, "", cancellationToken);
+        }
+
+        public async Task RegisterAsync(string account, string headImageUri, string password, string nickName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (account == null)
+            {
+                throw new ArgumentNullException(nameof(account));
+            }
+
+            if (headImageUri == null)
+            {
+                throw new ArgumentNullException(nameof(headImageUri));
+            }
+
+            if (!headImageUri.IsAbsoluteUriString())
+            {
+                throw new ArgumentException($"headimage must be a valid uri string :{headImageUri}", nameof(headImageUri));
+            }
+            if (password == null)
+            {
+                throw new ArgumentNullException(nameof(password));
+            }
+
+            if (nickName == null)
+            {
+                throw new ArgumentNullException(nameof(nickName));
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+
             var hasRegistered = await _respository.Contains(x => x.AccountName == account);
 
             if (hasRegistered)
@@ -37,10 +68,10 @@ namespace EamaShop.Identity.Services
             {
                 AccountName = account,
                 Password = password,
-                HeadImageUri = "https://www.baidu.com",
+                HeadImageUri = headImageUri,
                 Role = UserRole.User,
                 Sexy = Gender.Male,
-                NickName = "",
+                NickName = nickName,
                 Salt = salt
             };
 

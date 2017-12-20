@@ -31,7 +31,7 @@ namespace EamaShop.Infrastructures
         /// <typeparam name="TEventHandler"></typeparam>
         void Unsubscribe<TEvent, TEventHandler>()
             where TEvent : IEventMetadata
-            where TEventHandler : IEventBusEventHandler;
+            where TEventHandler : IEventBusEventHandler<TEvent>;
         /// <summary>
         /// 订阅指定的事件
         /// </summary>
@@ -39,6 +39,6 @@ namespace EamaShop.Infrastructures
         /// <typeparam name="TEventHandler"></typeparam>
         void Subscribe<TEvent, TEventHandler>()
             where TEvent : IEventMetadata
-            where TEventHandler : IEventBusEventHandler;
+            where TEventHandler : IEventBusEventHandler<TEvent>;
     }
 }

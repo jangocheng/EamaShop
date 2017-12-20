@@ -21,5 +21,20 @@ namespace EamaShop.Identity.Services
         /// <exception cref="DomainException">The user with given account name has already registered</exception>
         Task RegisterAsync(string account, string password,
             CancellationToken cancellationToken = default(CancellationToken));
+        /// <summary>
+        /// Register a new user by using given account name and password string.
+        /// </summary>
+        /// <param name="account">Account name</param>
+        /// <param name="password"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="headImageUri"></param>
+        /// <param name="nickName"></param>
+        /// <returns></returns>
+        /// <exception cref="DomainException">The user with given account name has already registered</exception>
+        Task RegisterAsync(string account, 
+            string headImageUri, 
+            string password,
+            string nickName,
+            CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -9,6 +10,7 @@ namespace System.Security.Claims
     /// <summary>
     /// Extensions for claim identity and principal
     /// </summary>
+    [DebuggerStepThrough]
     public static class ClaimIdentityExtensions
     {
         /// <summary>
@@ -43,7 +45,24 @@ namespace System.Security.Claims
             }
             return result;
         }
-
-
+        public static bool TryGetNickName(this ClaimsPrincipal principal, out string nickName, string name = "NickName")
+        {
+            nickName = null;
+            var result = principal.FindFirstValue(name);
+            if (result == null)
+            {
+                return false;
+            }
+            nickName = result;
+            return true;
+        }
+        public static string GetNickName(this ClaimsPrincipal principal, string name = "NickName")
+        {
+            if (!principal.TryGetNickName(out var result, name))
+            {
+                throw new InvalidOperationException($"there are no id was found name of {name}");
+            }
+            return result;
+        }
     }
 }

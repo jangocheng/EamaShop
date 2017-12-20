@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,6 +9,7 @@ namespace EamaShop.Infrastructures
     /// <summary>
     /// 表示被AES加密后的字符串
     /// </summary>
+    [DebuggerStepThrough]
     public struct AesSecretString : IEquatable<AesSecretString>
     {
         public AesSecretString(string secret) : this()

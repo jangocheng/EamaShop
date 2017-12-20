@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -20,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\EamaShop.Infrastructures.Event\EamaShop.Infrastructures.Events.csproj" />
     <ProjectReference Include="..\EamaShop.Infrastructures\EamaShop.Infrastructures.csproj" />
     <ProjectReference Include="..\Infrastructures\EamaShop.Infrastructures.Enums\EamaShop.Infrastructures.Enums.csproj" />
   </ItemGroup>

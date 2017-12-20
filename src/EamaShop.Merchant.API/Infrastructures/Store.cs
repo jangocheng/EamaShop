@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EamaShop.Infrastructures.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -26,6 +27,23 @@ namespace EamaShop.Merchant.API.Infrastructures
         [StringLength(60)]
         public string Name { get; set; }
         /// <summary>
+        /// 掌柜名称 默认创建的时候是当前用户的昵称
+        /// </summary>
+        [Required]
+        public string Manager { get; set; }
+        /// <summary>
+        /// 店铺的编号 可空
+        /// </summary>
+        public string StoreNumber { get; set; }
+        /// <summary>
+        /// 联系人的移动电话
+        /// </summary>
+        public string MobilePhone { get; set; }
+        /// <summary>
+        /// 联系人的客服座机号码
+        /// </summary>
+        public string Telephone { get; set; }
+        /// <summary>
         /// 店铺描述
         /// </summary>
         [Required]
@@ -36,5 +54,15 @@ namespace EamaShop.Merchant.API.Infrastructures
         /// </summary>
         [Url]
         public string LogoUri { get; set; }
+        /// <summary>
+        /// 获取或设置门店的创建时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
+        /// <summary>
+        /// 门店的经营状态
+        /// </summary>
+        public StoreStatus Status { get; set; }
+
+        public string Scopes { get; set; }
     }
 }

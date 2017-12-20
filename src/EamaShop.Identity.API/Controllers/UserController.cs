@@ -13,6 +13,9 @@ using System.Security.Claims;
 
 namespace EamaShop.Identity.API.Controllers
 {
+    /// <summary>
+    /// 用户相关接口
+    /// </summary>
     [Produces("application/json")]
     [Route("api/User")]
     [Authorize]
@@ -36,7 +39,9 @@ namespace EamaShop.Identity.API.Controllers
             await service.RegisterAsync(
                 account: parameters.AccountName,
                  password: parameters.Password,
-                 cancellationToken: HttpContext.RequestAborted);
+                 cancellationToken: HttpContext.RequestAborted,
+                 headImageUri: parameters.HeadImageUri,
+                 nickName: parameters.NickName);
 
             return Ok();
         }
@@ -84,6 +89,7 @@ namespace EamaShop.Identity.API.Controllers
         /// 修改密码
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpPut("password")]
         public async Task<IActionResult> ChangePassword([FromBody]UserPasswordPutDTO parameters)
         {
