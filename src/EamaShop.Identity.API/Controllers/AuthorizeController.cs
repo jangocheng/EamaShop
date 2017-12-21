@@ -38,6 +38,7 @@ namespace EamaShop.Identity.API.Controllers
         /// <param name="parameters"></param>
         /// <returns></returns>
         [HttpPost("jwtbearer")]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserToken))]
         public async Task<IActionResult> JwtBearer([FromBody]JwtBearerAuthDto parameters)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using EamaShop.Identity;
 using EamaShop.Infrastructures;
 using EamaShop.Infrastructures.Events;
 using EamaShop.Merchant.API.DTO;
@@ -78,7 +79,7 @@ namespace EamaShop.Merchant.API.Controllers
         /// <param name="value"></param>
         [HttpPut]
         [Authorize(Roles = nameof(EamaShop.Infrastructures.Enums.UserRole.Admin))]
-        public async Task<IActionResult> Audit(StoreApplyPutDTO parameters)
+        public async Task<IActionResult> Audit([FromForm]StoreApplyPutDTO parameters)
         {
             var apply = await _context.StoreCreateApply
                 .SingleOrDefaultAsync(x => x.Id == parameters.AuditId, HttpContext.RequestAborted);
@@ -87,45 +88,47 @@ namespace EamaShop.Merchant.API.Controllers
             {
                 return NotFound(new { Message = "申请单未找到" });
             }
-
-            if (parameters.Agree)
+            // do read and write
+            var provider = HttpContext.RequestServices.GetRequiredService<IDistributedLockProvider>();
+            var locker = provider.GetLock(parameters.AuditId.ToString());
+            if (!await locker.EnterAsync(TimeSpan.FromSeconds(8), HttpContext.RequestAborted))
             {
-                apply.AuditStatus = EamaShop.Infrastructures.Enums.AuditStatus.Allowed;
-
-                var store = new Store()
-                {
-                    CreateTime = DateTime.Now,
-                    Description = apply.StoreDescription,
-                    LogoUri = apply.StoreLogoUri,
-                    Manager = apply.Manager,
-                    UId = apply.UId,
-                    Name = apply.StoreName,
-                    Status = EamaShop.Infrastructures.Enums.StoreStatus.Closed,
-                    Scopes = apply.Scopes
-                };
-                // 创建店铺
-                await _context.Store.AddAsync(store);
-
-                // publish a event to event bus.
-                var eventBus = HttpContext.RequestServices.GetRequiredService<IEventBus>();
-                var @event = new StoreCreatedEvent()
-                {
-                    StoreDescription = store.Description,
-                    StoreLogoUri = store.LogoUri,
-                    StoreId = store.Id,
-                    UId = store.UId,
-                    StoreName = store.Name,
-                    StoreScopes = JsonConvert.DeserializeObject<IEnumerable<string>>(store.Scopes)
-                };
-                // eventBus.Publish(@event);
+                return Accepted(new { Message = "当前申请单已经被其他操作员处理" });
             }
-            else
+            try
             {
-                apply.AuditStatus = EamaShop.Infrastructures.Enums.AuditStatus.NotAllowed;
+                if (parameters.Agree)
+                {
+                    apply.AuditStatus = EamaShop.Infrastructures.Enums.AuditStatus.Allowed;
+
+                    var store = new Store()
+                    {
+                        CreateTime = DateTime.Now,
+                        Description = apply.StoreDescription,
+                        LogoUri = apply.StoreLogoUri,
+                        Manager = apply.Manager,
+                        UId = apply.UId,
+                        Name = apply.StoreName,
+                        Status = EamaShop.Infrastructures.Enums.StoreStatus.Closed,
+                        Scopes = apply.Scopes
+                    };
+                    // 创建店铺
+                    await _context.Store.AddAsync(store);
+                    var client = HttpContext.RequestServices.GetRequiredService<IIdentityClient>();
+                    await client.ApiUserRoleByIdPutAsync(apply.UId, "");
+                }
+                else
+                {
+                    apply.AuditStatus = EamaShop.Infrastructures.Enums.AuditStatus.NotAllowed;
+                }
+                apply.AuditTime = DateTime.Now;
+                apply.Reason = parameters.Reason;
+                await _context.SaveChangesAsync(HttpContext.RequestAborted);
             }
-            apply.AuditTime = DateTime.Now;
-            apply.Reason = parameters.Reason;
-            await _context.SaveChangesAsync(HttpContext.RequestAborted);
+            finally
+            {
+                await locker.ExitAsync();
+            }
 
             return Ok();
         }

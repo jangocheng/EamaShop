@@ -27,7 +27,7 @@ namespace EamaShop.Merchant.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAll();
+            services.AddAll(Configuration);
             if (Environment.IsDevelopment())
             {
                 services.AddDefaultSwagger("Merchant Service", "http://localhost:59322", "auth_base");
@@ -36,6 +36,7 @@ namespace EamaShop.Merchant.API
             {
                 opt.UseSqlServer(Configuration.GetConnectionString("Master"));
             });
+            services.AddIdentityClient();
             // services.AddIdentityServices(Configuration.GetConnectionString("Master"));
         }
 

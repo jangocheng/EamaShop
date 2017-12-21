@@ -15,11 +15,12 @@ namespace EamaShop.Infrastructures
             var hasAuthorize = (context.ApiDescription.ControllerAttributes().OfType<AuthorizeAttribute>().Any() ||
                 context.ApiDescription.ActionAttributes().OfType<AuthorizeAttribute>().Any()) && !context.ApiDescription.ActionAttributes().OfType<AllowAnonymousAttribute>().Any();
 
+           
             if (hasAuthorize)
             {
-                operation.Responses.Add("401", new Response { Description = "Unauthorized" });
+                operation.Responses.Add("401", new Response { Description = "用户未登陆，或未提供用户token" });
 
-                operation.Responses.Add("403", new Response { Description = "Forbidden" });
+                operation.Responses.Add("403", new Response { Description = "用户权限不足，无法访问该api" });
                 var parameter = new NonBodyParameter()
                 {
                     Description = "身份认证的授权token",
@@ -27,7 +28,7 @@ namespace EamaShop.Infrastructures
                     Type = "string",
                     Name = "Authorization",
                     In = "header",
-                    Format = "Bearer {0}"
+                    Format = "Bearer {0}",
                 };
                 
                 operation.Parameters = operation.Parameters ?? new List<IParameter>();

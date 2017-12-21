@@ -42,7 +42,7 @@ namespace EamaShop.Identity.Services
             }
             cancellationToken.ThrowIfCancellationRequested();
             // TODO: check verify code is valid.
-            
+
             var user = await _respository.FindById(id, cancellationToken);
 
             if (user == null)
@@ -89,6 +89,19 @@ namespace EamaShop.Identity.Services
             await _respository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
         }
 
+        public async Task ChangeRole(long id, UserRole role)
+        {
+            var user = await _respository.FindById(id);
+
+            if (user == null)
+            {
+                throw new DomainException("用户不存在");
+            }
+            user.Role = user.Role | role;
+            _respository.UpdateUser(user);
+            await _respository.UnitOfWork.SaveEntitiesAsync();
+        }
+
         public async Task EditInfo(long id, Action<UserEditor> configure,
             CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -115,6 +128,13 @@ namespace EamaShop.Identity.Services
                 await _respository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
             }
         }
+
+        public Task<ApplicationUser> GetByIdAsync(long id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return _respository.FindById(id, cancellationToken);
+        }
+
         private class EFUserEditor : UserEditor
         {
             private readonly ApplicationUser _metadata;

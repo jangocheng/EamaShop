@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -33,11 +34,16 @@ namespace EamaShop.Infrastructures
             ILogger<RabbitMQEventBus> logger,
             IEventHandlerManager manager,
             IServiceProvider service,
-            int retryCount = 5)
+            IOptions<RabbitMQEventBusOptions> options)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
             _persistentConnection = persistentConnection ?? throw new ArgumentNullException(nameof(persistentConnection));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _retryCount = retryCount;
+            _retryCount = options.Value.PublishRetryCount;
             _manager = manager ?? throw new ArgumentNullException(nameof(manager));
             this.service = service ?? throw new ArgumentNullException(nameof(service));
             _channel = CreateConsumer();
@@ -155,7 +161,7 @@ namespace EamaShop.Infrastructures
 
         private async Task ProcessEventAsync(string eventName, string jsonMessage)
         {
-            var handlerTypes = _manager.GetHandlers(eventName,out var eventType);
+            var handlerTypes = _manager.GetHandlers(eventName, out var eventType);
             using (var scope = service.CreateScope())
             {
                 foreach (var t in handlerTypes)
@@ -164,7 +170,7 @@ namespace EamaShop.Infrastructures
 
                     var methodInfo = instance.GetType()
                         .GetMethod("HandleAsync");
-                    
+
                     var @event = JsonConvert.DeserializeObject(jsonMessage, eventType, _setting);
 
                     var task = (Task)methodInfo.Invoke(instance, new[] { @event });

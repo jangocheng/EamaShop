@@ -27,7 +27,7 @@ namespace EamaShop.Infrastructures
                 context.Exception,
                 context.Exception.Message);
 
-            context.Result = new ObjectResult(new { Message = context.Exception.Message })
+            context.Result = new ObjectResult(new Dictionary<string, string>() { { "Message", context.Exception.Message } })
             {
                 StatusCode = 400
             };

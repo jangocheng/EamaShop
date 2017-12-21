@@ -10,12 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EamaShop.Infrastructures\EamaShop.Infrastructures.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="EamaShop.Infrastructures.Enums">
-      <HintPath>..\Infrastructures\EamaShop.Infrastructures.Enums\bin\Debug\netcoreapp2.0\EamaShop.Infrastructures.Enums.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\Infrastructures\EamaShop.Infrastructures.Enums\EamaShop.Infrastructures.Enums.csproj" />
   </ItemGroup>
 
 </Project>

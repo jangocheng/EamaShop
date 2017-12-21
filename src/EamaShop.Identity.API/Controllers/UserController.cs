@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using EamaShop.Identity.Services;
 using EamaShop.Infrastructures.Enums;
 using System.Security.Claims;
+using System.Net;
 
 namespace EamaShop.Identity.API.Controllers
 {
@@ -28,6 +29,8 @@ namespace EamaShop.Identity.API.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Register([FromBody]UserRegisterDTO parameters)
         {
             if (!ModelState.IsValid)
@@ -51,9 +54,21 @@ namespace EamaShop.Identity.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Details()
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserGetDTO))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(IDictionary<string, string>))]
+        public async Task<IActionResult> Details()
         {
-            return Ok(User.Claims.ToDictionary(x => x.Type, x => x.Value));
+            var userInfoService = HttpContext
+                .RequestServices
+                .GetRequiredService<IUserInfoService>();
+            var user = await userInfoService.GetByIdAsync(User.GetId(), HttpContext.RequestAborted);
+
+            if (user == null)
+            {
+                return NotFound(new { Message = "用户不存在" });
+            }
+
+            return Ok(new UserGetDTO(user));
         }
         /// <summary>
         /// 修改用户基础信息
@@ -61,6 +76,7 @@ namespace EamaShop.Identity.API.Controllers
         /// <param name="parameters"></param>
         /// <returns></returns>
         [HttpPut]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Put([FromBody]UserPutDTO parameters)
         {
             if (!ModelState.IsValid)
@@ -91,6 +107,7 @@ namespace EamaShop.Identity.API.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPut("password")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> ChangePassword([FromBody]UserPasswordPutDTO parameters)
         {
             if (!ModelState.IsValid)
@@ -116,6 +133,7 @@ namespace EamaShop.Identity.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPut("phone")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> BindPhone([FromBody]UserPhonePutDTO parameters)
         {
             if (!ModelState.IsValid)
@@ -133,6 +151,29 @@ namespace EamaShop.Identity.API.Controllers
                 phone: parameters.Phone,
                 verifyCode: parameters.VerifyCode,
                 cancellationToken: HttpContext.RequestAborted);
+
+            return Ok();
+        }
+        /// <summary>
+        /// 修改用户角色为商户
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("role/{id}")]
+        [Authorize(Roles = nameof(UserRole.Admin))]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Role(long id)
+        {
+            var userInfoService = HttpContext
+               .RequestServices
+               .GetRequiredService<IUserInfoService>();
+
+            if (id <= 0)
+            {
+                return BadRequest();
+            }
+
+            await userInfoService.ChangeRole(id, UserRole.Merchant);
 
             return Ok();
         }

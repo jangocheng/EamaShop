@@ -7,6 +7,7 @@ using System.IO;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using System.Net.Sockets;
+using Microsoft.Extensions.Options;
 
 namespace EamaShop.Infrastructures
 {
@@ -17,11 +18,16 @@ namespace EamaShop.Infrastructures
         private readonly ILogger<RabbitMQPersistentConnection> _logger;
         private readonly int _retryCount;
         private readonly object _sync = new object();
-        public RabbitMQPersistentConnection(IConnectionFactory factory, ILogger<RabbitMQPersistentConnection> logger, int retryCount = 5)
+        public RabbitMQPersistentConnection(IConnectionFactory factory, ILogger<RabbitMQPersistentConnection> logger, IOptions<RabbitMQEventBusOptions> options)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _retryCount = retryCount;
+            _retryCount = options.Value.ConnectRetryCount;
         }
         public bool IsConnected => _connection != null && _connection.IsOpen && !_disposed;
 

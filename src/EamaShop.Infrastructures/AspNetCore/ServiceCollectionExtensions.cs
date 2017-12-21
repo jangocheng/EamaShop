@@ -1,26 +1,19 @@
 ﻿using EamaShop.Infrastructures;
-using EamaShop.Infrastructures.HttpStandard;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 
@@ -45,15 +38,20 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
         /// <summary>
-        /// Add All infrastructure services
+        /// Add All infrastructure required services. MVC ,Authentication ,ResponseCaching,IHttpClient
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddAll(this IServiceCollection services)
+        public static IServiceCollection AddAll(this IServiceCollection services, IConfiguration configuration)
         {
             if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
+            }
+
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
             }
 
             // for restful api;
@@ -69,55 +67,91 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddAuthentication(Configure)
                 .AddJwtBearer(Configure);
 
-            // for event bus
-            services.TryAddSingleton<IEventBus>(sp =>
+            services.AddResponseCaching();
+
+
+            services.AddRabbitMQEventBus(opt =>
             {
-                var connection = sp.GetRequiredService<IRabbitMQPersistentConnection>();
-                var logger = sp.GetRequiredService<ILogger<RabbitMQEventBus>>();
-                var manager = sp.GetRequiredService<IEventHandlerManager>();
-                var config = sp.GetRequiredService<IConfiguration>();
-
-                var retryCount = 5;
-                if (!string.IsNullOrEmpty(config["EventBusPublishRetryCount"]))
-                {
-                    retryCount = int.Parse(config["EventBusPublishRetryCount"]);
-                }
-
-                return new RabbitMQEventBus(connection, logger, manager, sp, retryCount);
+                opt.ConnectRetryCount = configuration.GetValue<int>("RabbitMQConnectionRetry");
+                opt.Host = configuration.GetValue<string>("RabbitMQHost");
+                opt.PublishRetryCount = configuration.GetValue<int>("EventBusPublishRetryCount");
+                opt.UserName = configuration.GetValue<string>("RabbitMQUserName");
+                opt.Password = configuration.GetValue<string>("RabbitMQPassword");
             });
+
+            services.AddDistributedRedisLock(opt =>
+            {
+                opt.Configuration = configuration["RedisLockInstanceName"];
+                opt.InstanceName = configuration["RedisLockInstanceName"];
+            });
+            return services;
+        }
+        /// <summary>
+        /// Adding RabbitMQ EventBus.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddRabbitMQEventBus(this IServiceCollection services, Action<RabbitMQEventBusOptions> configure)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            if (configure == null)
+            {
+                throw new ArgumentNullException(nameof(configure));
+            }
+            services.Configure(configure);
+            // for event bus
+            services.TryAddSingleton<IEventBus, RabbitMQEventBus>();
             services.TryAddSingleton<IRabbitMQPersistentConnection>(sp =>
             {
                 var logger = sp.GetRequiredService<ILogger<RabbitMQPersistentConnection>>();
-                var config = sp.GetRequiredService<IConfiguration>();
-
-                var host = config["RabbitMQHost"];
-                var userName = config["RabbitMQUserName"] ?? "guest";
-                var password = config["RabbitMQPassword"] ?? "guest";
+                var o = sp.GetRequiredService<IOptions<RabbitMQEventBusOptions>>();
+                var options = o.Value;
+                var host = options.Host ?? "localhost";
+                var userName = options.UserName ?? "guest";
+                var password = options.Password ?? "guest";
                 var connectionFactory = new ConnectionFactory()
                 {
-                    HostName = host ?? "localhost",
+                    HostName = host,
                     Password = password,
                     UserName = userName
                 };
-
-                var retryCount = 5;
-                if (!string.IsNullOrEmpty(config["RabbitMQConnectionRetry"]))
-                {
-                    retryCount = int.Parse(config["RabbitMQConnectionRetry"]);
-                }
-                return new RabbitMQPersistentConnection(connectionFactory, logger, retryCount);
+                return new RabbitMQPersistentConnection(connectionFactory, logger, o);
             });
             services.TryAddSingleton<IEventHandlerManager, EventBusHandlerManager>();
 
-            services.AddResponseCaching();
+            return services;
+        }
+        /// <summary>
+        /// Adding Distributed LOCK
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddDistributedRedisLock(this IServiceCollection services, Action<RedisLockOptions> configure)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
 
-            services.TryAddSingleton(typeof(IHttpClient<>), typeof(StandardHttpClient<>));
-            services.TryAddSingleton(MicroserviceDescriptor.Catalog);
-            services.TryAddSingleton(MicroserviceDescriptor.Merchant);
+            if (configure == null)
+            {
+                throw new ArgumentNullException(nameof(configure));
+            }
+
+            services.Configure(configure);
+            // for distributed lock
+            services.TryAddSingleton<IDistributedLockProvider, RedisLockProvider>();
+            services.TryAddSingleton(sp =>
+            {
+                return sp.GetRequiredService<IDistributedLockProvider>().GetLock("DEFAULT_LOCK");
+            });
 
             return services;
         }
-
         #region Mvc
         private static void Configure(MvcOptions options)
         {
@@ -177,7 +211,13 @@ namespace Microsoft.Extensions.DependencyInjection
             //    },
             //    Description = "该页面用于提供给开发者进行调试开放API接口，但是调试之前需要进行OAuth2.0的授权"
             //});
-
+            //options.AddSecurityDefinition("Bearer", new Swashbuckle.AspNetCore.Swagger.ApiKeyScheme()
+            //{
+            //    In = "header",
+            //    Description = "Bearer授权认证",
+            //    Name = "Bearer",
+            //    Type = "string"
+            //});
             options.IgnoreObsoleteActions();
             var files = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.xml", SearchOption.AllDirectories);
             foreach (var f in files)
@@ -185,6 +225,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.IncludeXmlComments(f);
             }
             options.OperationFilter<AuthorizeCheckOperationFilter>();
+            options.OperationFilter<BadRequestCheckOperationFilter>();
         }
         #endregion
 

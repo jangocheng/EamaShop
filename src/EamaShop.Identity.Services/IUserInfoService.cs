@@ -1,4 +1,5 @@
 ﻿using EamaShop.Identity.DataModel;
+using EamaShop.Infrastructures.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,5 +36,9 @@ namespace EamaShop.Identity.Services
 
         Task BindPhone(long id, string phone, string verifyCode,
             CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<ApplicationUser> GetByIdAsync(long id, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task ChangeRole(long id,UserRole role);
     }
 }

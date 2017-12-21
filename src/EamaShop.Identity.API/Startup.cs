@@ -25,7 +25,7 @@ namespace EamaShop.Identity.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAll();
+            services.AddAll(Configuration);
             if (Environment.IsDevelopment())
             {
                 services.AddDefaultSwagger("Identity Service", "http://localhost:59322", "auth_base");
