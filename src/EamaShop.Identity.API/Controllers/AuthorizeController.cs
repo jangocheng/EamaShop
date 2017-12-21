@@ -40,7 +40,7 @@ namespace EamaShop.Identity.API.Controllers
         [HttpPost("jwtbearer")]
         [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(UserToken))]
-        public async Task<IActionResult> JwtBearer([FromBody]JwtBearerAuthDto parameters)
+        public async Task<IActionResult> JwtBearer([FromForm]JwtBearerAuthDto parameters)
         {
             if (!ModelState.IsValid)
             {

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace EamaShop.Identity.API.Dto
 {
+    /// <summary>
+    /// 用户设置新密码的表单请求信息
+    /// </summary>
     public class UserPasswordPutDTO
     {
         /// <summary>

@@ -14,11 +14,9 @@ namespace EamaShop.Identity.API.Dto
         [Required]
         public string Name { get; set; }
         /// <summary>
-        /// 密码
+        /// 用户密码
         /// </summary>
         [Required]
         public string Password { get; set; }
-
-
     }
 }

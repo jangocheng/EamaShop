@@ -2,10 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp2.0\EamaShop.Identity.API.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Properties\PublishProfiles\registry.hub.docker.com_wuyafeng.pubxml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
@@ -21,12 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EamaShop.Identity.Services\EamaShop.Identity.Services.csproj" />
     <ProjectReference Include="..\EamaShop.Infrastructures\EamaShop.Infrastructures.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="EamaShop.Infrastructures.Enums">
-      <HintPath>..\Infrastructures\EamaShop.Infrastructures.Enums\bin\Debug\netcoreapp2.0\EamaShop.Infrastructures.Enums.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\Infrastructures\EamaShop.Infrastructures.Enums\EamaShop.Infrastructures.Enums.csproj" />
   </ItemGroup>
 
 </Project>

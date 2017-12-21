@@ -31,7 +31,7 @@ namespace EamaShop.Identity.API.Controllers
         [AllowAnonymous]
         [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Register([FromBody]UserRegisterDTO parameters)
+        public async Task<IActionResult> Register([FromForm]UserRegisterDTO parameters)
         {
             if (!ModelState.IsValid)
             {
@@ -77,7 +77,7 @@ namespace EamaShop.Identity.API.Controllers
         /// <returns></returns>
         [HttpPut]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Put([FromBody]UserPutDTO parameters)
+        public async Task<IActionResult> Put([FromForm]UserPutDTO parameters)
         {
             if (!ModelState.IsValid)
             {
@@ -102,13 +102,13 @@ namespace EamaShop.Identity.API.Controllers
             return Ok();
         }
         /// <summary>
-        /// 修改密码
+        /// 修改密码接口
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPut("password")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> ChangePassword([FromBody]UserPasswordPutDTO parameters)
+        public async Task<IActionResult> ChangePassword([FromForm]UserPasswordPutDTO parameters)
         {
             if (!ModelState.IsValid)
             {
@@ -134,7 +134,7 @@ namespace EamaShop.Identity.API.Controllers
         /// <returns></returns>
         [HttpPut("phone")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> BindPhone([FromBody]UserPhonePutDTO parameters)
+        public async Task<IActionResult> BindPhone([FromForm]UserPhonePutDTO parameters)
         {
             if (!ModelState.IsValid)
             {
