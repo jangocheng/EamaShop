@@ -23,7 +23,7 @@ namespace EamaShop.Infrastructures
                 operation.Responses.Add("403", new Response { Description = "用户权限不足，无法访问该api" });
                 var parameter = new NonBodyParameter()
                 {
-                    Description = "身份认证的授权token",
+                    Description = "身份认证的授权token eg. Bearer ej",
                     Required = true,
                     Type = "string",
                     Name = "Authorization",

@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using NLog.Extensions.Logging;
 
 namespace EamaShop.Identity.API
 {
@@ -41,7 +42,8 @@ namespace EamaShop.Identity.API
                 app.UseDefaultSwaggerAndDev("IdentityService");
             }
             app.UseAll();
-
+            logger.AddDefaultLog();
+            
             try
             {
                 using (var scope = app.ApplicationServices.CreateScope())

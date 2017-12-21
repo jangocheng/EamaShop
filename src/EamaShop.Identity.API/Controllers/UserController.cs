@@ -155,7 +155,7 @@ namespace EamaShop.Identity.API.Controllers
             return Ok();
         }
         /// <summary>
-        /// 修改用户角色为商户
+        /// 修改用户角色为商户 该接口不会对外提供，只能在当前测试页面进行查看
         /// </summary>
         /// <returns></returns>
         [HttpPut("role/{id}")]
