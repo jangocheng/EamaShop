@@ -1,37 +1,7 @@
 version: '3'
 
 services:
-  eamashop.catalog.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "80"
-
-  eamashop.delievery.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "80"
-
-  eamashop.ordering.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "80"
-
   eamashop.identity.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "80"
-
-  eamashop.basket.api:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - "80"
-
-  eamashop.merchant.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
