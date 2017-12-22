@@ -1,8 +1,8 @@
 version: '3'
-
+#将当前解决方案下的所有项目进行编译并发布到项目对应的obj/docker/publish文件夹下
 services:
   ci-build:
-    image: microsoft/aspnetcore-build:1.0-2.0
+    image: microsoft/aspnetcore-build:2.0.3
     volumes:
       - .:/src
     working_dir: /src
