@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  eamashop.identity.api:
+    image: eamashop.identity.api
+    build:
+      context: ./src/EamaShop.Identity.API
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres.db
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 100M
+    ports:
+      - "8989:80"
+    networks:
+      - webnet
+  visualizer:
+    image: dockersamples/visualizer
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+  postgres.db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=123456
+    ports:
+      - "5432:5432"
+    deploy:
+      constraints: [node.role == manager]
+networks:
+  - webnet:
