@@ -20,7 +20,7 @@ namespace EamaShop.Infrastructure.Tests
             var logger = factory.CreateLogger<LogTests>();
 
             var excetion = new Exception("Error Message");
-            for (int index = 0; index < 999999; index++)
+            for (int index = 0; index < 9; index++)
             {
                 logger.LogTrace("trace");
                 logger.LogDebug("debug");
