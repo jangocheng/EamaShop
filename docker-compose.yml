@@ -72,9 +72,4 @@ services:
     ports:
       - "1433:1433"
 
-  webapplication1:
-    image: webapplication1
-    build:
-      context: .
-      dockerfile: src/WebApplication1/Dockerfile
 
