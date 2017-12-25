@@ -13,6 +13,8 @@ services:
           memory: 100M
     ports:
       - "8989:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
     networks:
       - webnet
   postgres_db:
