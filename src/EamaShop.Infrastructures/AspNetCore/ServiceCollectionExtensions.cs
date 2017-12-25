@@ -232,7 +232,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.IncludeXmlComments(f);
             }
             options.OperationFilter<AuthorizeCheckOperationFilter>();
-            options.OperationFilter<BadRequestCheckOperationFilter>();
         }
         #endregion
 
