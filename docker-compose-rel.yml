@@ -2,10 +2,7 @@ version: '3'
 
 services:
   eamashop.identity.api:
-    image: eamashop.identity.api
-    build:
-      context: ./src/EamaShop.Identity.API
-      dockerfile: Dockerfile
+    image: registry.cn-hangzhou.aliyuncs.com/wuyafeng/eamashop.identity.api
     depends_on:
       - postgres.db
     deploy:
@@ -24,6 +21,9 @@ services:
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
   postgres.db:
     image: postgres
     environment:
@@ -31,6 +31,7 @@ services:
     ports:
       - "5432:5432"
     deploy:
-      constraints: [node.role == manager]
+      placement:
+        constraints: [node.role == manager]
 networks:
   - webnet:
