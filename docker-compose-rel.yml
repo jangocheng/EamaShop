@@ -15,15 +15,6 @@ services:
       - "8989:80"
     networks:
       - webnet
-  visualizer:
-    image: dockersamples/visualizer
-    ports:
-      - "8080:8080"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    deploy:
-      placement:
-        constraints: [node.role == manager]
   postgres_db:
     image: postgres
     environment:
