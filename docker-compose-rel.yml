@@ -1,10 +1,10 @@
 version: '3'
 
 services:
-  eamashop.identity.api:
+  eamashop_identity_api:
     image: registry.cn-hangzhou.aliyuncs.com/wuyafeng/eamashop.identity.api
     depends_on:
-      - postgres.db
+      - postgres_db
     deploy:
       replicas: 1
       resources:
@@ -24,7 +24,7 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
-  postgres.db:
+  postgres_db:
     image: postgres
     environment:
       - POSTGRES_PASSWORD=123456
