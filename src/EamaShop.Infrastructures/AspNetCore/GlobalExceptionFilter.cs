@@ -26,7 +26,7 @@ namespace EamaShop.Infrastructures
                 return;
             }
 
-            _logger.LogError(new EventId(context.Exception.HResult),
+            _logger.LogError(new EventId(context.Exception.HResult, context.Exception.Source),
                 context.Exception,
                 context.Exception.Message);
 

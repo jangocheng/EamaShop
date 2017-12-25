@@ -8,12 +8,6 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - postgres.db
-  visualizer:
-    image: dockersamples/visualizer
-    ports:
-      - "8080:8080"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
   postgres.db:
     image: postgres
     environment:
