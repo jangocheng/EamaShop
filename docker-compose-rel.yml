@@ -34,4 +34,4 @@ services:
       placement:
         constraints: [node.role == manager]
 networks:
-  - webnet:
+  webnet:
