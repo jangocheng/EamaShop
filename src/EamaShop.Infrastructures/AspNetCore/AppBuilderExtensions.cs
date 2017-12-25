@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Microsoft.AspNetCore.Builder
 {
+    /// <summary>
+    /// Provides extension methods for EamaShop Web Restful Api.
+    /// </summary>
     public static class AppBuilderExtensions
     {
         public static IApplicationBuilder UseAll(this IApplicationBuilder app)
@@ -24,6 +27,12 @@ namespace Microsoft.AspNetCore.Builder
 
             return app;
         }
+        /// <summary>
+        /// Add swagger doc Middleware
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="serviceName"></param>
+        /// <returns></returns>
         public static IApplicationBuilder UseDefaultSwaggerAndDev(this IApplicationBuilder app, string serviceName)
         {
             app.UseSwagger()

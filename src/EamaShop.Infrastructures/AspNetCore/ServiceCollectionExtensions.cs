@@ -24,7 +24,14 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class ServiceCollectionExtensions
     {
-
+        /// <summary>
+        /// Add default swagger document services.
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="serviceName"></param>
+        /// <param name="identityUrl"></param>
+        /// <param name="scope"></param>
+        /// <returns></returns>
         public static IServiceCollection AddDefaultSwagger(this IServiceCollection services, string serviceName, string identityUrl, string scope)
         {
             if (services == null)

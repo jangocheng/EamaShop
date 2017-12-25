@@ -7,8 +7,17 @@ using System.Text;
 
 namespace Microsoft.Extensions.Logging
 {
+    /// <summary>
+    /// Privides extension methods for <see cref="ILoggerFactory"/>
+    /// </summary>
     public static class LoggFactoryExtensions
     {
+        /// <summary>
+        /// Add a Default EamaShop LoggerProvider.
+        /// </summary>
+        /// <param name="loggerFactory"></param>
+        /// <param name="minLevel"></param>
+        /// <returns></returns>
         public static ILoggerFactory AddDefaultLog(this ILoggerFactory loggerFactory, LogLevel minLevel = LogLevel.Trace)
         {
             if (loggerFactory == null)

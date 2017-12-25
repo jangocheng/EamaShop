@@ -6,6 +6,7 @@ using System.Extensions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using Xunit;
 
 namespace EamaShop.Infrastructure.Tests
@@ -19,13 +20,14 @@ namespace EamaShop.Infrastructure.Tests
             var before = a;
             a = "0000";
             // 1 , 11,001
-
+            int cccc = 0;
+            var seed = Interlocked.Increment(ref cccc);
             UserRole role = UserRole.User | UserRole.Merchant | UserRole.Admin;
             if ((role & UserRole.Merchant) != 0)
             {
 
             }
-            var newrole= role | UserRole.Merchant;
+            var newrole = role | UserRole.Merchant;
             var nnRole = role ^ UserRole.User;
             var nnnRole = nnRole & UserRole.User;
             var ff = role.HasFlag(UserRole.Merchant);
