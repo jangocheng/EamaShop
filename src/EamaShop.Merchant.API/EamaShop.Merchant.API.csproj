@@ -2,8 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Properties\PublishProfiles\https___registry.cn-hangzhou.aliyuncs.com_wuyafeng_eamashop.merchant.api.pubxml" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\" />
@@ -16,6 +20,10 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\registry.cn-hangzhou.aliyuncs.com.pubxml.user" />
   </ItemGroup>
 
   <ItemGroup>
