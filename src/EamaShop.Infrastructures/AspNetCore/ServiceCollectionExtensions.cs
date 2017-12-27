@@ -89,7 +89,13 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddDistributedRedisLock(opt =>
             {
                 opt.Configuration = configuration["RedisLockInstanceName"];
-                opt.InstanceName = configuration["RedisLockInstanceName"];
+                opt.InstanceName = configuration["RedisInstanceName"];
+            });
+
+            services.AddDistributedRedisCache(opt =>
+            {
+                opt.Configuration = configuration["RedisConnectionConfiguration"];
+                opt.InstanceName= configuration["RedisInstanceName"];
             });
             return services;
         }

@@ -8,9 +8,16 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - postgres.db
+      - redis_db
+    links:
+      - redis_db
   postgres.db:
     image: postgres
     environment:
       - POSTGRES_PASSWORD=123456
     ports:
       - "5432:5432"
+  redis_db:
+    image: redis
+    ports:
+      - "6379:6379"
