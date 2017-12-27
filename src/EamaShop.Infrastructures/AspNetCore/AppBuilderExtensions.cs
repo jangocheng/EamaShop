@@ -16,7 +16,7 @@ namespace Microsoft.AspNetCore.Builder
         /// </summary>
         /// <param name="app"></param>
         /// <returns></returns>
-        public static IApplicationBuilder UseRestfulApiApp(this IApplicationBuilder app)
+        public static IApplicationBuilder UseAll(this IApplicationBuilder app)
         {
             if (app == null)
             {
