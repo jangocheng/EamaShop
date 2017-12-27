@@ -16,13 +16,16 @@ namespace EamaShop.Identity.Services
         private readonly ILogger<UserInfoService> _logger;
         private readonly IUserRespository _respository;
         private readonly IPasswordEncryptor _passwordEncryptor;
+        private readonly IVerifyCodeManager _verifyCodeManager;
         public UserInfoService(ILogger<UserInfoService> logger,
             IUserRespository respository,
-            IPasswordEncryptor passwordEncryptor)
+            IPasswordEncryptor passwordEncryptor,
+            IVerifyCodeManager verifyCodeManager)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _respository = respository ?? throw new ArgumentNullException(nameof(respository));
             _passwordEncryptor = passwordEncryptor ?? throw new ArgumentNullException(nameof(passwordEncryptor));
+            _verifyCodeManager = verifyCodeManager ?? throw new ArgumentNullException(nameof(verifyCodeManager));
         }
 
         public async Task BindPhone(long id, string phone, string verifyCode, CancellationToken cancellationToken = default(CancellationToken))
@@ -41,7 +44,10 @@ namespace EamaShop.Identity.Services
                 throw new ArgumentException($"invalid phone number :{phone}", nameof(phone));
             }
             cancellationToken.ThrowIfCancellationRequested();
-            // TODO: check verify code is valid.
+
+            var code = await _verifyCodeManager.GetAsync(verifyCode, cancellationToken);
+            code.EnsureValidate(phone);
+            code.Use();
 
             var user = await _respository.FindById(id, cancellationToken);
 
