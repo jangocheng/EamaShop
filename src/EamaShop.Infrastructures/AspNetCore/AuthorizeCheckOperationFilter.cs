@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EamaShop.Infrastructures
 {
-    class AuthorizeCheckOperationFilter : IOperationFilter
+    internal class AuthorizeCheckOperationFilter : IOperationFilter
     {
         public void Apply(Operation operation, OperationFilterContext context)
         {

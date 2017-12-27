@@ -13,7 +13,7 @@ namespace Microsoft.Extensions.Logging
     public static class LoggFactoryExtensions
     {
         /// <summary>
-        /// Add a Default EamaShop LoggerProvider.
+        /// Add a Default NLog LoggerProvider.
         /// </summary>
         /// <param name="loggerFactory"></param>
         /// <param name="minLevel"></param>
@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.Logging
             var config = new LoggingConfiguration();
             var title = "${longdate}|事件Id=${event-properties:item=EventId.Id}|${logger}";
             var body = "${newline}${message}";
-            var layout = title + body + "${newline}Error: ${exception}";
+            var layout = title + body + "${newline}ErrorMessage: ${exception}${newline}####################################################################";
             var fileTarge = new FileTarget()
             {
 

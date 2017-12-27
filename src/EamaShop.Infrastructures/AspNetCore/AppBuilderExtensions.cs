@@ -11,7 +11,12 @@ namespace Microsoft.AspNetCore.Builder
     /// </summary>
     public static class AppBuilderExtensions
     {
-        public static IApplicationBuilder UseAll(this IApplicationBuilder app)
+        /// <summary>
+        /// Configure all middleware support RestfulApi web application.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <returns></returns>
+        public static IApplicationBuilder UseRestfulApiApp(this IApplicationBuilder app)
         {
             if (app == null)
             {
@@ -28,7 +33,7 @@ namespace Microsoft.AspNetCore.Builder
             return app;
         }
         /// <summary>
-        /// Add swagger doc Middleware
+        /// Add Api Document Middleware for this web application.
         /// </summary>
         /// <param name="app"></param>
         /// <param name="serviceName"></param>
@@ -42,7 +47,7 @@ namespace Microsoft.AspNetCore.Builder
 
             return app;
         }
-        public static void Configure(SwaggerUIOptions options, string serviceName)
+        private static void Configure(SwaggerUIOptions options, string serviceName)
         {
             options.SwaggerEndpoint($"/swagger/v1/swagger.json", AppDomain.CurrentDomain.FriendlyName);
             options.ConfigureOAuth2("swaggerui", "", "", AppDomain.CurrentDomain.FriendlyName);

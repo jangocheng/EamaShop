@@ -7,15 +7,21 @@ using System.Text;
 
 namespace EamaShop.Infrastructures
 {
+    /// <summary>
+    /// A handing filter that runs after an action has thrown an <see cref="DomainException"/>
+    /// </summary>
     public class DomainExceptionFilter : IExceptionFilter
     {
         private readonly ILogger<DomainExceptionFilter> _logger;
-
+        /// <summary>
+        /// Initiaze a new <see cref="DomainExceptionFilter"/> instance.
+        /// </summary>
+        /// <param name="logger"></param>
         public DomainExceptionFilter(ILogger<DomainExceptionFilter> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-
+        ///<inheritdoc />
         public void OnException(ExceptionContext context)
         {
             if (context.ExceptionHandled || !(context.Exception is DomainException))
