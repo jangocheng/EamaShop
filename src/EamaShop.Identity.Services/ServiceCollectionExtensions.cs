@@ -36,6 +36,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddScoped<IUserInfoService, UserInfoService>();
 
             services.AddSingleton<IUserTokenFactory, UserTokenFactory>();
+            services.TryAddSingleton<ISmsSender, SmsSender>();
+            services.TryAddSingleton<IVerifyCodeManager, VerifyCodeManager>();
             return services;
         }
     }

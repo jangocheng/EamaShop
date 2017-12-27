@@ -129,10 +129,30 @@ namespace EamaShop.Identity.Services
             }
         }
 
+        public async Task<ApplicationUser> GetByEmailAsync(string email, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (email == null)
+            {
+                throw new ArgumentNullException(nameof(email));
+            }
+
+            return await _respository.FindByIdentifier(email);
+        }
+
         public Task<ApplicationUser> GetByIdAsync(long id, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             return _respository.FindById(id, cancellationToken);
+        }
+
+        public async Task<ApplicationUser> GetByPhoneAsync(string phone, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (phone == null)
+            {
+                throw new ArgumentNullException(nameof(phone));
+            }
+
+            return await _respository.FindByIdentifier(phone);
         }
 
         private class EFUserEditor : UserEditor

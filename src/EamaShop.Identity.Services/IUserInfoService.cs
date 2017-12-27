@@ -39,6 +39,16 @@ namespace EamaShop.Identity.Services
 
         Task<ApplicationUser> GetByIdAsync(long id, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task ChangeRole(long id,UserRole role);
+
+        /// <summary>
+        /// Get User By phone number.
+        /// </summary>
+        /// <returns></returns>
+        Task<ApplicationUser> GetByPhoneAsync(string phone,
+            CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<ApplicationUser> GetByEmailAsync(string email,
+            CancellationToken cancellationToken = default(CancellationToken));
+        Task ChangeRole(long id, UserRole role);
     }
 }
