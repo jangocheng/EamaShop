@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\sdk\Clients\EamaShop.Identity.Client\EamaShop.Identity.Client.csproj" />
     <ProjectReference Include="..\EamaShop.Infrastructures\EamaShop.Infrastructures.csproj" />
     <ProjectReference Include="..\Infrastructures\EamaShop.Infrastructures.Enums\EamaShop.Infrastructures.Enums.csproj" />
     <ProjectReference Include="..\Infrastructures\EamaShop.Infrastructures.Event\EamaShop.Infrastructures.Events.csproj" />
