@@ -18,8 +18,10 @@ namespace EamaShop.Identity.API.Controllers
         /// </summary>
         /// <param name="name">用户唯一标识符</param>
         /// <returns></returns>
+        [HttpPost]
         public async Task<IActionResult> Post(string name)
         {
+            await Task.CompletedTask;
             // do post
             return Ok();
         }

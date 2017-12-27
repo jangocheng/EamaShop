@@ -16,12 +16,14 @@ namespace EamaShop.Delievery.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create()
         {
+            await Task.CompletedTask;
             return Ok();
         }
         
         [HttpGet]
         public async Task<IActionResult> Details()
         {
+            await Task.CompletedTask;
             return Ok();
         }
 
